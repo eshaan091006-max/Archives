@@ -20,10 +20,10 @@ export const Marquee = ({ text, speed = 40, direction = 'left' }: MarqueeProps) 
         }}
         className="flex shrink-0"
       >
-        <span className="text-[12vw] lg:text-[15vw] font-['Britannic_Bold'] uppercase px-8" style={{ WebkitTextStroke: '2px var(--color-text-main)', color: 'transparent' }}>
+        <span className="text-[25vw] md:text-[15vw] font-['Britannic_Bold'] uppercase px-8" style={{ WebkitTextStroke: '2px var(--color-text-main)', color: 'transparent' }}>
           {text}
         </span>
-        <span className="text-[12vw] lg:text-[15vw] font-['Britannic_Bold'] uppercase px-8" style={{ WebkitTextStroke: '2px var(--color-text-main)', color: 'transparent' }}>
+        <span className="text-[25vw] md:text-[15vw] font-['Britannic_Bold'] uppercase px-8" style={{ WebkitTextStroke: '2px var(--color-text-main)', color: 'transparent' }}>
           {text}
         </span>
       </motion.div>
@@ -37,10 +37,10 @@ export const Marquee = ({ text, speed = 40, direction = 'left' }: MarqueeProps) 
         }}
         className="flex shrink-0"
       >
-        <span className="text-[12vw] lg:text-[15vw] font-['Britannic_Bold'] uppercase px-8" style={{ WebkitTextStroke: '2px var(--color-text-main)', color: 'transparent' }}>
+        <span className="text-[25vw] md:text-[15vw] font-['Britannic_Bold'] uppercase px-8" style={{ WebkitTextStroke: '2px var(--color-text-main)', color: 'transparent' }}>
           {text}
         </span>
-        <span className="text-[12vw] lg:text-[15vw] font-['Britannic_Bold'] uppercase px-8" style={{ WebkitTextStroke: '2px var(--color-text-main)', color: 'transparent' }}>
+        <span className="text-[25vw] md:text-[15vw] font-['Britannic_Bold'] uppercase px-8" style={{ WebkitTextStroke: '2px var(--color-text-main)', color: 'transparent' }}>
           {text}
         </span>
       </motion.div>

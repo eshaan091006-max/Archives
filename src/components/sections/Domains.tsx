@@ -102,8 +102,12 @@ export const Domains = ({ onNavigateDomain }: { onNavigateDomain: (domain: any) 
   return (
     <section id="domains" className="relative py-32 bg-[var(--color-bg-secondary)] overflow-hidden transition-colors duration-500">
       {/* Background Marquee */}
-      <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 z-0 pointer-events-none">
+      <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 z-0 pointer-events-none flex flex-col gap-4 md:gap-0">
         <Marquee text="DOMAINS" direction="right" speed={40} />
+        <div className="md:hidden flex flex-col gap-4">
+          <Marquee text="DOMAINS" speed={35} direction="left" />
+          <Marquee text="DOMAINS" speed={45} direction="right" />
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10" style={{ perspective: "1000px" }}>

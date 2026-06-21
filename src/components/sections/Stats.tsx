@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Calendar, Users, Briefcase, Clock } from 'lucide-react';
 
 export const Stats = () => {

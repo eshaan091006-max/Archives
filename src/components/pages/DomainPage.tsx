@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { ArrowLeft, ArrowUpRight, Layers } from 'lucide-react';
 import { useSound } from '../../hooks/useSound';
@@ -81,6 +81,7 @@ const MagneticDepartmentCard = ({ dept, index, playHover }: { dept: string, inde
 };
 
 export const DomainPage = ({ id, title, description, departments, onBack }: DomainPageProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const { playTransition, playHover } = useSound();
 
   useEffect(() => {
@@ -89,8 +90,9 @@ export const DomainPage = ({ id, title, description, departments, onBack }: Doma
 
   return (
     <motion.div 
+      ref={containerRef}
       layoutId={`domain-${id}`}
-      exit={{ opacity: 0, transition: { duration: 0.3 } }}
+      exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)", transition: { duration: 0.4, ease: "easeOut" } }}
       transition={{ type: "spring", stiffness: 400, damping: 35 }}
       className="fixed inset-0 z-[200] bg-[var(--color-bg-main)] overflow-y-auto overflow-x-hidden"
       data-lenis-prevent="true"
