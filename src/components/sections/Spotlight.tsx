@@ -141,7 +141,7 @@ export const Spotlight = () => {
         {bodiesData.map((data) => (
           <div
             key={data.id}
-            ref={(el) => (domRefs.current[data.id] = el)}
+            ref={(el) => { domRefs.current[data.id] = el; }}
             className={`absolute top-0 left-0 ${data.color} shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-colors duration-500`}
             style={{
               width: data.size,
