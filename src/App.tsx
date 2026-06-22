@@ -44,6 +44,7 @@ function App() {
               key="dept" 
               id={currentPage.id} 
               name={currentPage.name} 
+              year={year}
               onBack={() => setCurrentPage(null)} 
             />
           )}

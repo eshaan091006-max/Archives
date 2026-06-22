@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 export const CustomCursor = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
 
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
@@ -27,12 +28,21 @@ export const CustomCursor = () => {
       );
     };
 
+    const checkHidden = () => {
+      setIsHidden(document.body.classList.contains('hide-global-cursor'));
+    };
+
+    const observer = new MutationObserver(checkHidden);
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    checkHidden();
+
     window.addEventListener('mousemove', updateMousePosition);
     window.addEventListener('mouseover', updateHoverState);
 
     return () => {
       window.removeEventListener('mousemove', updateMousePosition);
       window.removeEventListener('mouseover', updateHoverState);
+      observer.disconnect();
     };
   }, []);
 
@@ -42,10 +52,10 @@ export const CustomCursor = () => {
       animate={{
         x: mousePosition.x - 16,
         y: mousePosition.y - 16,
-        scale: isHovering ? 2.5 : 1,
+        scale: isHidden ? 0 : (isHovering ? 2.5 : 1),
         backgroundColor: isHovering ? 'var(--color-bg-main)' : 'var(--color-accent-secondary)',
         border: isHovering ? '2px solid var(--color-accent-primary)' : '0px solid transparent',
-        opacity: isHovering ? 0.8 : 1,
+        opacity: isHidden ? 0 : (isHovering ? 0.8 : 1),
       }}
       transition={{
         type: 'spring',
