@@ -74,7 +74,7 @@ const LiquidInkBackground = ({ isInkActive }: { isInkActive: boolean }) => {
         size,
         maxSize,
         opacity: 0.96,
-        color: Math.random() > 0.4 ? '#4E270A' : '#7C360B',
+        color: Math.random() > 0.4 ? '#023E8A' : '#03045E', // Deep ink blues
         bleedFactor: Math.random() * 0.3 + 0.1,
         points,
       });
