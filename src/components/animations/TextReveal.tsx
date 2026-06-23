@@ -23,11 +23,11 @@ export const TextReveal = ({ text, className = '', delay = 0 }: TextRevealProps)
 
   const wordVariants = {
     hidden: { y: '100%', rotate: 5, opacity: 0 },
-    visible: { 
-      y: '0%', 
-      rotate: 0, 
+    visible: {
+      y: '0%',
+      rotate: 0,
       opacity: 1,
-      transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } 
+      transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] },
     },
   };
 

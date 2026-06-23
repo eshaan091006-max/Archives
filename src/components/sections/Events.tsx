@@ -10,10 +10,18 @@ const departments = [
   { id: 'ipa', name: 'Indian Performing Arts' },
   { id: 'etcw', name: 'ETCW' },
   { id: 'fa', name: 'Fine Arts' },
-  { id: 'la', name: 'Literary Arts' }
+  { id: 'la', name: 'Literary Arts' },
 ];
 
-const SpotlightCard = ({ dept, index, onClick }: { dept: typeof departments[0], index: number, onClick: (dept: any) => void }) => {
+const SpotlightCard = ({
+  dept,
+  index,
+  onClick,
+}: {
+  dept: (typeof departments)[0];
+  index: number;
+  onClick: (dept: any) => void;
+}) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const { playHover } = useSound();
@@ -25,7 +33,7 @@ const SpotlightCard = ({ dept, index, onClick }: { dept: typeof departments[0], 
   }
 
   return (
-    <motion.button 
+    <motion.button
       layoutId={`dept-${dept.id}`}
       onClick={() => onClick(dept)}
       onMouseEnter={playHover}
@@ -33,9 +41,9 @@ const SpotlightCard = ({ dept, index, onClick }: { dept: typeof departments[0], 
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ 
-        layout: { type: "spring", stiffness: 400, damping: 35 },
-        default: { delay: index * 0.1 }
+      transition={{
+        layout: { type: 'spring', stiffness: 400, damping: 35 },
+        default: { delay: index * 0.1 },
       }}
       onMouseMove={handleMouseMove}
       className={`relative group flex flex-col justify-between p-8 md:p-12 min-h-[300px] bg-[var(--color-bg-secondary)]/50 backdrop-blur-sm border border-[var(--color-border-main)]/30 rounded-3xl overflow-hidden hover:border-[var(--color-accent-primary)]/50 transition-colors duration-500 text-left ${index === 0 ? 'md:col-span-2 lg:col-span-2' : ''}`}
@@ -57,7 +65,7 @@ const SpotlightCard = ({ dept, index, onClick }: { dept: typeof departments[0], 
           <ArrowUpRight className="w-8 h-8 text-[var(--color-accent-primary)] group-hover:text-[var(--color-bg-main)] transition-colors" />
         </div>
       </div>
-      
+
       <h3 className="text-4xl md:text-5xl font-['Boldonse'] text-[var(--color-text-main)] transition-colors uppercase leading-[1.1] relative z-10">
         {dept.name}
       </h3>
@@ -67,7 +75,10 @@ const SpotlightCard = ({ dept, index, onClick }: { dept: typeof departments[0], 
 
 export const Events = ({ onNavigate }: { onNavigate: (dept: any) => void }) => {
   return (
-    <section id="events" className="relative py-32 bg-[var(--color-bg-main)] overflow-hidden transition-colors duration-500">
+    <section
+      id="events"
+      className="relative py-32 bg-[var(--color-bg-main)] overflow-hidden transition-colors duration-500"
+    >
       {/* Background Marquee */}
       <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 z-0 pointer-events-none flex flex-col gap-4 md:gap-0">
         <Marquee text="EVENTS" speed={30} />

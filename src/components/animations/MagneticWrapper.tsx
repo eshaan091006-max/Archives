@@ -1,10 +1,16 @@
 import React, { useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 
-export const MagneticWrapper = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => {
+export const MagneticWrapper = ({
+  children,
+  className = '',
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
-  
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -17,11 +23,11 @@ export const MagneticWrapper = ({ children, className = '' }: { children: React.
     if (!ref.current) return;
     const { clientX, clientY } = e;
     const { height, width, left, top } = ref.current.getBoundingClientRect();
-    
+
     // Calculate distance from center of the element
     const middleX = clientX - (left + width / 2);
     const middleY = clientY - (top + height / 2);
-    
+
     // Less aggressive magnetic pull (0.15 instead of 0.3)
     x.set(middleX * 0.15);
     y.set(middleY * 0.15);

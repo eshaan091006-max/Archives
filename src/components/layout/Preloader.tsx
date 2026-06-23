@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
 
 export const Preloader = ({ onComplete }: { onComplete: () => void }) => {
   const [progress, setProgress] = useState(0);
-  const [text, setText] = useState("ARCHIVES");
-  const targetText = "ARCHIVES";
+  const [text, setText] = useState('ARCHIVES');
+  const targetText = 'ARCHIVES';
 
   useEffect(() => {
     // Progress interval
     const timer = setInterval(() => {
-      setProgress((prev) => {
+      setProgress(prev => {
         if (prev >= 100) {
           clearInterval(timer);
           setTimeout(onComplete, 600); // Wait a bit before fading out
@@ -28,23 +28,23 @@ export const Preloader = ({ onComplete }: { onComplete: () => void }) => {
   useEffect(() => {
     let iterations = 0;
     const interval = setInterval(() => {
-      setText((prev) => 
+      setText(prev =>
         prev
-          .split("")
+          .split('')
           .map((letter, index) => {
             if (index < iterations) {
               return targetText[index];
             }
             return CHARS[Math.floor(Math.random() * CHARS.length)];
           })
-          .join("")
+          .join('')
       );
-      
+
       if (iterations >= targetText.length) {
         clearInterval(interval);
       }
-      
-      iterations += 1/3;
+
+      iterations += 1 / 3;
     }, 30);
 
     return () => clearInterval(interval);
@@ -69,12 +69,10 @@ export const Preloader = ({ onComplete }: { onComplete: () => void }) => {
       </div>
 
       <div className="text-center relative z-10 w-full px-6">
-        <motion.h1 
-          className="text-6xl md:text-8xl lg:text-[120px] font-['Britannic_Bold'] text-[var(--color-accent-primary)] mb-8 tracking-widest uppercase transition-colors duration-500"
-        >
+        <motion.h1 className="text-6xl md:text-8xl lg:text-[120px] font-['Britannic_Bold'] text-[var(--color-accent-primary)] mb-8 tracking-widest uppercase transition-colors duration-500">
           {text}
         </motion.h1>
-        
+
         {/* Progress bar container */}
         <div className="w-full max-w-2xl h-[1px] bg-[var(--color-border-main)]/30 mx-auto overflow-hidden relative">
           {/* Animated fill */}
@@ -82,15 +80,15 @@ export const Preloader = ({ onComplete }: { onComplete: () => void }) => {
             className="absolute left-0 top-0 bottom-0 bg-[var(--color-accent-primary)] transition-colors duration-500"
             initial={{ width: '0%' }}
             animate={{ width: `${progress}%` }}
-            transition={{ ease: "linear", duration: 0.1 }}
+            transition={{ ease: 'linear', duration: 0.1 }}
           />
         </div>
-        
+
         <div className="mt-8 overflow-hidden h-6">
-          <motion.p 
+          <motion.p
             initial={{ y: 20 }}
             animate={{ y: progress === 100 ? 0 : 20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             className="text-[var(--color-text-main)]/50 font-['Inter'] tracking-[0.3em] text-sm uppercase"
           >
             SYSTEM READY

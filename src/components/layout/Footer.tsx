@@ -11,21 +11,31 @@ export const Footer = () => {
               Join the Legacy
             </h3>
             <p className="text-[var(--color-text-main)]/60 font-['Inter'] max-w-md">
-              Malhar is one of the largest inter-collegiate cultural festivals in Asia. Be a part of the journey.
+              Malhar is one of the largest inter-collegiate cultural festivals in Asia. Be a part of
+              the journey.
             </p>
           </div>
-          
+
           <div className="flex flex-col gap-4">
             <h4 className="text-sm font-['Inter'] font-bold text-[var(--color-text-main)] tracking-widest uppercase mb-4">
               Socials
             </h4>
-            <a href="#" className="text-[var(--color-text-main)]/60 hover:text-[var(--color-accent-primary)] font-['Inter'] transition-colors w-max">
+            <a
+              href="#"
+              className="text-[var(--color-text-main)]/60 hover:text-[var(--color-accent-primary)] font-['Inter'] transition-colors w-max"
+            >
               Instagram
             </a>
-            <a href="#" className="text-[var(--color-text-main)]/60 hover:text-[var(--color-accent-primary)] font-['Inter'] transition-colors w-max">
+            <a
+              href="#"
+              className="text-[var(--color-text-main)]/60 hover:text-[var(--color-accent-primary)] font-['Inter'] transition-colors w-max"
+            >
               YouTube
             </a>
-            <a href="#" className="text-[var(--color-text-main)]/60 hover:text-[var(--color-accent-primary)] font-['Inter'] transition-colors w-max">
+            <a
+              href="#"
+              className="text-[var(--color-text-main)]/60 hover:text-[var(--color-accent-primary)] font-['Inter'] transition-colors w-max"
+            >
               LinkedIn
             </a>
           </div>
@@ -33,7 +43,7 @@ export const Footer = () => {
 
         {/* Massive Footer Text */}
         <div className="w-full border-t border-[var(--color-border-main)]/30 pt-12 pb-4 flex flex-col items-center overflow-hidden">
-          <motion.h1 
+          <motion.h1
             initial={{ y: 100, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
@@ -48,12 +58,17 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Background Noise for Footer */}
       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none mix-blend-overlay">
         <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
           <filter id="noiseFilterFooter">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch" />
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.9"
+              numOctaves="3"
+              stitchTiles="stitch"
+            />
           </filter>
           <rect width="100%" height="100%" filter="url(#noiseFilterFooter)" />
         </svg>

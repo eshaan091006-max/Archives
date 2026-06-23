@@ -66,7 +66,7 @@ body {
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1.0000 0.0000 0);
+  --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -223,70 +223,92 @@ img.broken-image-fallback {
 @layer utilities {
   .theme-2023 {
     --color-bg-main: #090715;
-    --color-bg-secondary: #27143C;
+    --color-bg-secondary: #27143c;
     --color-bg-tertiary: #441656;
-    --color-accent-primary: #19BAF1;
-    --color-accent-secondary: #461C6E;
-    --color-text-main: #F9D5FB;
-    --color-text-highlight: #0961CF;
+    --color-accent-primary: #19baf1;
+    --color-accent-secondary: #461c6e;
+    --color-text-main: #f9d5fb;
+    --color-text-highlight: #0961cf;
     --color-border-main: rgba(255, 255, 255, 0.1);
-}
+  }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
 
-::-webkit-scrollbar-track {
-  background: var(--color-bg-main);
-  transition: background 0.5s ease;
-}
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg-main);
+    transition: background 0.5s ease;
+  }
 
-::-webkit-scrollbar-thumb {
-  background: var(--color-accent-primary);
-  border-radius: 10px;
-  transition: background 0.5s ease;
-}
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-accent-primary);
+    border-radius: 10px;
+    transition: background 0.5s ease;
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent-secondary);
-}
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent-secondary);
+  }
 
   .theme-2024 {
-    --color-bg-main: #0E0F11;
-    --color-bg-secondary: #41060A;
-    --color-bg-tertiary: #D92B2C;
-    --color-accent-primary: #F7B249;
-    --color-accent-secondary: #DC573A;
-    --color-text-main: #FFFFFE;
-    --color-text-highlight: #E79C5B;
-    --color-border-main: #EEC590;
+    --color-bg-main: #0e0f11;
+    --color-bg-secondary: #41060a;
+    --color-bg-tertiary: #d92b2c;
+    --color-accent-primary: #f7b249;
+    --color-accent-secondary: #dc573a;
+    --color-text-main: #fffffe;
+    --color-text-highlight: #e79c5b;
+    --color-border-main: #eec590;
   }
 
   .theme-2025 {
-    --color-bg-main: #030F1B;
-    --color-bg-secondary: #021E34;
-    --color-bg-tertiary: #30546A;
-    --color-accent-primary: #C9A84C;
-    --color-accent-secondary: #7FACA1;
-    --color-text-main: #FFFFFF;
-    --color-text-highlight: #EAD5A8;
-    --color-border-main: #DFB86D;
+    --color-bg-main: #030f1b;
+    --color-bg-secondary: #021e34;
+    --color-bg-tertiary: #30546a;
+    --color-accent-primary: #c9a84c;
+    --color-accent-secondary: #7faca1;
+    --color-text-main: #ffffff;
+    --color-text-highlight: #ead5a8;
+    --color-border-main: #dfb86d;
   }
 }
 
 @keyframes anarchy-shake {
-  0% { transform: translate(1px, 1px) rotate(0deg); }
-  10% { transform: translate(-1px, -2px) rotate(-1deg); }
-  20% { transform: translate(-3px, 0px) rotate(1deg); }
-  30% { transform: translate(0px, 2px) rotate(0deg); }
-  40% { transform: translate(1px, -1px) rotate(1deg); }
-  50% { transform: translate(-1px, 2px) rotate(-1deg); }
-  60% { transform: translate(-3px, 1px) rotate(0deg); }
-  70% { transform: translate(2px, 1px) rotate(-1deg); }
-  80% { transform: translate(-1px, -1px) rotate(1deg); }
-  90% { transform: translate(2px, 2px) rotate(0deg); }
-  100% { transform: translate(1px, -2px) rotate(-1deg); }
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+  30% {
+    transform: translate(0px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  70% {
+    transform: translate(2px, 1px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+  90% {
+    transform: translate(2px, 2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
 }
 
 @keyframes scanline {

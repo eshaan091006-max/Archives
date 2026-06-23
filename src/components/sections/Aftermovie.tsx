@@ -10,7 +10,7 @@ export const Aftermovie: React.FC<AftermovieProps> = ({ year }) => {
   const videoIds: Record<string, string> = {
     '2023': '9J63MWGe024',
     '2024': 'XZhBXGv5dd4',
-    '2025': 'GXKTPvnTa0w'
+    '2025': 'GXKTPvnTa0w',
   };
 
   const videoId = videoIds[year] || videoIds['2024'];

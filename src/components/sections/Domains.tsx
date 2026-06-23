@@ -10,26 +10,60 @@ const domains = [
     id: 'networking',
     title: 'Networking',
     icon: Network,
+    image: 'https://images.unsplash.com/photo-1511649475669-e288648b2339?auto=format&fit=crop&q=80',
     description: 'Building connections and fostering relationships across the festival ecosystem.',
-    departments: ['Public Relations', 'Creatives', 'Conclave', 'Decor & Merchandise', 'Filming & Documentation', 'Computers']
+    departments: [
+      'Public Relations',
+      'Creatives',
+      'Conclave',
+      'Decor & Merchandise',
+      'Filming & Documentation',
+      'Computers',
+    ],
   },
   {
     id: 'management',
     title: 'Management',
     icon: Briefcase,
+    image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80',
     description: 'The backbone of operations, ensuring seamless execution of every detail.',
-    departments: ['Logistics', 'Assistance', 'Hospitality', 'Security', 'Finance', 'Technicals', 'Marketing']
+    departments: [
+      'Logistics',
+      'Assistance',
+      'Hospitality',
+      'Security',
+      'Finance',
+      'Technicals',
+      'Marketing',
+    ],
   },
   {
     id: 'events',
     title: 'Events',
     icon: Ticket,
-    description: 'Curating unforgettable experiences through spectacular performances and competitions.',
-    departments: ['Fine Arts', 'Admin', 'Indian Performing Arts', 'Western Performing Arts', 'ETCW', 'Literary Arts']
-  }
+    image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80',
+    description:
+      'Curating unforgettable experiences through spectacular performances and competitions.',
+    departments: [
+      'Fine Arts',
+      'Admin',
+      'Indian Performing Arts',
+      'Western Performing Arts',
+      'ETCW',
+      'Literary Arts',
+    ],
+  },
 ];
 
-const TiltCard = ({ domain, index, onClick }: { domain: typeof domains[0], index: number, onClick: (domain: any) => void }) => {
+const TiltCard = ({
+  domain,
+  index,
+  onClick,
+}: {
+  domain: (typeof domains)[0];
+  index: number;
+  onClick: (domain: any) => void;
+}) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const { playHover } = useSound();
@@ -37,8 +71,8 @@ const TiltCard = ({ domain, index, onClick }: { domain: typeof domains[0], index
   const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15, mass: 0.1 });
   const mouseYSpring = useSpring(y, { stiffness: 150, damping: 15, mass: 0.1 });
 
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['15deg', '-15deg']);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-15deg', '15deg']);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -65,28 +99,28 @@ const TiltCard = ({ domain, index, onClick }: { domain: typeof domains[0], index
       style={{
         rotateX,
         rotateY,
-        transformStyle: "preserve-3d",
+        transformStyle: 'preserve-3d',
       }}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ 
-        layout: { type: "spring", stiffness: 400, damping: 35 },
-        default: { delay: index * 0.1 }
+      transition={{
+        layout: { type: 'spring', stiffness: 400, damping: 35 },
+        default: { delay: index * 0.1 },
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={playHover}
       className="relative flex flex-col p-8 bg-[var(--color-bg-secondary)]/80 backdrop-blur-md border border-[var(--color-border-main)] rounded-3xl hover:border-[var(--color-accent-secondary)] transition-colors duration-500 min-h-[300px] text-left group no-cursor-scale"
     >
-      <div 
-        style={{ transform: "translateZ(50px)" }}
+      <div
+        style={{ transform: 'translateZ(50px)' }}
         className="w-16 h-16 rounded-2xl bg-[var(--color-bg-main)] border border-[var(--color-border-main)] flex items-center justify-center mb-8 group-hover:bg-[var(--color-accent-secondary)] transition-colors duration-500"
       >
         <domain.icon className="w-8 h-8 text-[var(--color-accent-secondary)] group-hover:text-[var(--color-bg-main)] transition-colors duration-500" />
       </div>
-      
-      <div style={{ transform: "translateZ(30px)" }}>
+
+      <div style={{ transform: 'translateZ(30px)' }}>
         <h3 className="text-3xl font-['Boldonse'] text-[var(--color-text-main)] mb-4 uppercase">
           {domain.title}
         </h3>
@@ -100,7 +134,10 @@ const TiltCard = ({ domain, index, onClick }: { domain: typeof domains[0], index
 
 export const Domains = ({ onNavigateDomain }: { onNavigateDomain: (domain: any) => void }) => {
   return (
-    <section id="domains" className="relative py-32 bg-[var(--color-bg-secondary)] overflow-hidden transition-colors duration-500">
+    <section
+      id="domains"
+      className="relative py-32 bg-[var(--color-bg-secondary)] overflow-hidden transition-colors duration-500"
+    >
       {/* Background Marquee */}
       <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 z-0 pointer-events-none flex flex-col gap-4 md:gap-0">
         <Marquee text="DOMAINS" direction="right" speed={40} />
@@ -110,7 +147,7 @@ export const Domains = ({ onNavigateDomain }: { onNavigateDomain: (domain: any) 
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10" style={{ perspective: "1000px" }}>
+      <div className="max-w-7xl mx-auto px-6 relative z-10" style={{ perspective: '1000px' }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -125,7 +162,12 @@ export const Domains = ({ onNavigateDomain }: { onNavigateDomain: (domain: any) 
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {domains.map((domain, index) => (
-            <TiltCard key={domain.id} domain={domain} index={index} onClick={onNavigateDomain || (() => {})} />
+            <TiltCard
+              key={domain.id}
+              domain={domain}
+              index={index}
+              onClick={onNavigateDomain || (() => {})}
+            />
           ))}
         </div>
       </div>

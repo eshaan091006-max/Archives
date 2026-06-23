@@ -6,16 +6,16 @@ interface VelocityScrollProps {
   className?: string;
 }
 
-export const VelocityScroll = ({ children, className = "" }: VelocityScrollProps) => {
+export const VelocityScroll = ({ children, className = '' }: VelocityScrollProps) => {
   const { scrollY } = useScroll();
-  
+
   // Track scroll velocity
   const scrollVelocity = useVelocity(scrollY);
-  
+
   // Smooth the velocity
   const smoothVelocity = useSpring(scrollVelocity, {
     damping: 50,
-    stiffness: 400
+    stiffness: 400,
   });
 
   // Map velocity to a skew transform.
@@ -23,10 +23,7 @@ export const VelocityScroll = ({ children, className = "" }: VelocityScrollProps
   const skewY = useTransform(smoothVelocity, [-1000, 0, 1000], [-3, 0, 3]);
 
   return (
-    <motion.div 
-      style={{ skewY }} 
-      className={className}
-    >
+    <motion.div style={{ skewY }} className={className}>
       {children}
     </motion.div>
   );

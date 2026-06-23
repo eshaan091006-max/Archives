@@ -20,18 +20,18 @@ export const InteractiveImage = ({ src, alt, className = '' }: InteractiveImageP
   };
 
   return (
-    <div 
+    <div
       ref={ref}
       className={`relative overflow-hidden group bg-black ${className}`}
       onMouseMove={handleMouseMove}
     >
       {/* Base Grayscale/Muted Image */}
-      <img 
-        src={src} 
-        alt={alt} 
+      <img
+        src={src}
+        alt={alt}
         className="absolute inset-0 w-full h-full object-cover grayscale opacity-30 transition-opacity duration-500"
       />
-      
+
       {/* Full Color Spotlight Image */}
       <motion.div
         className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -52,10 +52,10 @@ export const InteractiveImage = ({ src, alt, className = '' }: InteractiveImageP
           `,
         }}
       >
-        <img 
-          src={src} 
-          alt={alt} 
-          className="w-full h-full object-cover scale-105 transition-transform duration-[2s] ease-out group-hover:scale-110" 
+        <img
+          src={src}
+          alt={alt}
+          className="w-full h-full object-cover scale-105 transition-transform duration-[2s] ease-out group-hover:scale-110"
         />
       </motion.div>
     </div>

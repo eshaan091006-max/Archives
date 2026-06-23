@@ -20,14 +20,17 @@ const scheduleData = {
     { time: '01:00 PM', title: 'Fashion Show Finals', location: 'Main Auditorium' },
     { time: '05:00 PM', title: 'Closing Ceremony', location: 'Main Stage' },
     { time: '08:00 PM', title: 'The Concert', location: 'Main Stage' },
-  ]
+  ],
 };
 
 export const Schedule = () => {
   const [activeDay, setActiveDay] = useState<'Day 1' | 'Day 2' | 'Day 3'>('Day 1');
 
   return (
-    <section id="schedule" className="py-24 bg-[var(--color-bg-main)] transition-colors duration-500 relative z-10">
+    <section
+      id="schedule"
+      className="py-24 bg-[var(--color-bg-main)] transition-colors duration-500 relative z-10"
+    >
       <div className="max-w-5xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -43,7 +46,7 @@ export const Schedule = () => {
 
         {/* Day Tabs */}
         <div className="flex justify-center gap-4 md:gap-8 mb-12">
-          {(['Day 1', 'Day 2', 'Day 3'] as const).map((day) => (
+          {(['Day 1', 'Day 2', 'Day 3'] as const).map(day => (
             <button
               key={day}
               onClick={() => setActiveDay(day)}
@@ -72,17 +75,24 @@ export const Schedule = () => {
               className="space-y-8"
             >
               {scheduleData[activeDay].map((event, index) => (
-                <div key={index} className="relative flex flex-col md:flex-row items-center justify-between w-full">
+                <div
+                  key={index}
+                  className="relative flex flex-col md:flex-row items-center justify-between w-full"
+                >
                   {/* Timeline Dot */}
                   <div className="absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-[var(--color-accent-secondary)] border-4 border-[var(--color-bg-main)] transform -translate-x-1/2 z-10" />
 
                   {/* Desktop Layout - Alternating Cards */}
-                  <div className={`w-full md:w-5/12 pl-12 md:pl-0 ${index % 2 === 0 ? 'md:text-right md:pr-12' : 'md:ml-auto md:pl-12'}`}>
+                  <div
+                    className={`w-full md:w-5/12 pl-12 md:pl-0 ${index % 2 === 0 ? 'md:text-right md:pr-12' : 'md:ml-auto md:pl-12'}`}
+                  >
                     <div className="bg-[var(--color-bg-secondary)]/50 backdrop-blur-sm border border-[var(--color-border-main)]/20 p-6 rounded-2xl hover:border-[var(--color-accent-primary)]/50 transition-colors duration-300 group">
                       <h3 className="text-2xl font-bold font-['Instrument_Sans'] text-[var(--color-text-main)] mb-3 group-hover:text-[var(--color-accent-primary)] transition-colors">
                         {event.title}
                       </h3>
-                      <div className={`flex flex-col gap-2 text-[var(--color-text-main)]/60 font-['Inter'] text-sm ${index % 2 === 0 ? 'md:items-end' : 'md:items-start'}`}>
+                      <div
+                        className={`flex flex-col gap-2 text-[var(--color-text-main)]/60 font-['Inter'] text-sm ${index % 2 === 0 ? 'md:items-end' : 'md:items-start'}`}
+                      >
                         <span className="flex items-center gap-2">
                           <Clock className="w-4 h-4 text-[var(--color-accent-secondary)]" />
                           {event.time}

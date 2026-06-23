@@ -7,10 +7,10 @@ export const VideoScrub = () => {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end start"]
+    offset: ['start end', 'end start'],
   });
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+  useMotionValueEvent(scrollYProgress, 'change', latest => {
     if (videoRef.current && !isNaN(videoRef.current.duration)) {
       // Scrub the video based on scroll percentage smoothly
       videoRef.current.currentTime = latest * videoRef.current.duration;

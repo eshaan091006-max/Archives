@@ -20,16 +20,16 @@ export const Hero = ({ year }: HeroProps) => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[var(--color-bg-main)] transition-colors duration-500">
       {/* Background SVG Parallax */}
-      <motion.div 
+      <motion.div
         style={{ y: bgY }}
-        className="absolute inset-0 z-0 opacity-10 bg-[url('https://storage.googleapis.com/storage.magicpath.ai/user/419318169308651520/figma-assets/85ca2033-150e-44f5-b2b4-38748c935b74.svg')] bg-cover bg-center" 
+        className="absolute inset-0 z-0 opacity-10 bg-[url('https://storage.googleapis.com/storage.magicpath.ai/user/419318169308651520/figma-assets/85ca2033-150e-44f5-b2b4-38748c935b74.svg')] bg-cover bg-center"
       />
-      
+
       {/* 3D Scene Parallax */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0">
         <Scene3D accentColor={theme.accentColor} />
       </motion.div>
-      
+
       <AnimatePresence mode="wait">
         <motion.div
           key={year}
@@ -46,11 +46,11 @@ export const Hero = ({ year }: HeroProps) => {
               {theme.subtitle}
             </span>
           </motion.div>
-          
+
           <h1 className="text-6xl md:text-8xl lg:text-[120px] font-['Britannic_Bold'] text-[var(--color-accent-primary)] mb-8 tracking-widest uppercase leading-none drop-shadow-[0_0_30px_rgba(var(--color-accent-primary),0.3)]">
             <TextReveal text={theme.title} delay={0.2} />
           </h1>
-          
+
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -59,19 +59,23 @@ export const Hero = ({ year }: HeroProps) => {
           >
             {theme.description}
           </motion.p>
-          
+
           <motion.button
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.8 }}
-            onClick={() => lenis?.scrollTo('#events', { duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) })}
+            onClick={() =>
+              lenis?.scrollTo('#events', {
+                duration: 1.5,
+                easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+              })
+            }
             className="mt-12 w-max px-8 py-4 bg-[var(--color-accent-primary)] text-[var(--color-bg-main)] font-bold uppercase tracking-widest rounded-full hover:bg-[var(--color-text-highlight)] transition-colors shadow-lg shadow-[var(--color-accent-primary)]/20"
           >
             Explore Events
           </motion.button>
         </motion.div>
       </AnimatePresence>
-      
     </section>
   );
 };

@@ -15,8 +15,8 @@ export const AnimatedDivider = ({ className = '' }: { className?: string }) => {
           strokeDasharray="1 1"
           initial={{ pathLength: 0, opacity: 0 }}
           whileInView={{ pathLength: 1, opacity: 1 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 1.5, ease: 'easeInOut' }}
         />
       </svg>
     </div>

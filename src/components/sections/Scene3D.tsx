@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 
 export const Scene3D = ({ accentColor }: { accentColor: string }) => {
   // A clean SVG noise texture to make the gradient look premium (stops color banding)
-  const noiseData = "data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E";
+  const noiseData =
+    "data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E";
 
   return (
     <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none mix-blend-screen">
@@ -21,7 +22,7 @@ export const Scene3D = ({ accentColor }: { accentColor: string }) => {
           background: `radial-gradient(circle at center, ${accentColor}, transparent 60%)`,
         }}
       />
-      
+
       {/* Blob 2: Secondary Background Color */}
       <motion.div
         animate={{
@@ -50,9 +51,9 @@ export const Scene3D = ({ accentColor }: { accentColor: string }) => {
           background: `radial-gradient(circle at center, var(--color-accent-secondary), transparent 70%)`,
         }}
       />
-      
+
       {/* Noise Overlay for premium matte finish */}
-      <div 
+      <div
         className="absolute inset-0 opacity-[0.05] mix-blend-overlay"
         style={{ backgroundImage: `url("${noiseData}")` }}
       />

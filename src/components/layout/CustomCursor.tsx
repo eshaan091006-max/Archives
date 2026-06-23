@@ -13,7 +13,7 @@ export const CustomCursor = () => {
 
     const updateHoverState = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      
+
       if (target.closest('.no-cursor-scale')) {
         setIsHovering(false);
         return;
@@ -21,10 +21,10 @@ export const CustomCursor = () => {
 
       setIsHovering(
         target.tagName.toLowerCase() === 'button' ||
-        target.tagName.toLowerCase() === 'a' ||
-        target.closest('button') !== null ||
-        target.closest('a') !== null ||
-        target.closest('[data-cursor="explore"]') !== null
+          target.tagName.toLowerCase() === 'a' ||
+          target.closest('button') !== null ||
+          target.closest('a') !== null ||
+          target.closest('[data-cursor="explore"]') !== null
       );
     };
 
@@ -52,10 +52,10 @@ export const CustomCursor = () => {
       animate={{
         x: mousePosition.x - 16,
         y: mousePosition.y - 16,
-        scale: isHidden ? 0 : (isHovering ? 2.5 : 1),
+        scale: isHidden ? 0 : isHovering ? 2.5 : 1,
         backgroundColor: isHovering ? 'var(--color-bg-main)' : 'var(--color-accent-secondary)',
         border: isHovering ? '2px solid var(--color-accent-primary)' : '0px solid transparent',
-        opacity: isHidden ? 0 : (isHovering ? 0.8 : 1),
+        opacity: isHidden ? 0 : isHovering ? 0.8 : 1,
       }}
       transition={{
         type: 'spring',

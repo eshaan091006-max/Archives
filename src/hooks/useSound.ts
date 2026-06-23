@@ -2,7 +2,8 @@ import { useState, useCallback, useEffect } from 'react';
 
 // Using public domain UI sound URLs
 const HOVER_SOUND = 'https://actions.google.com/sounds/v1/ui/button_click.ogg';
-const TRANSITION_SOUND = 'https://actions.google.com/sounds/v1/science_fiction/shield_force_field_hum.ogg';
+const TRANSITION_SOUND =
+  'https://actions.google.com/sounds/v1/science_fiction/shield_force_field_hum.ogg';
 
 // Global state so sound toggle persists across components
 let globalSoundEnabled = false;

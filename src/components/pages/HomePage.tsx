@@ -4,13 +4,14 @@ import { BackgroundEffects } from '../layout/BackgroundEffects';
 import { CustomCursor } from '../layout/CustomCursor';
 import { Hero } from '../sections/Hero';
 import { Stats } from '../sections/Stats';
+import { Quartet } from '../sections/Quartet';
 import { Domains } from '../sections/Domains';
 import { Events } from '../sections/Events';
 import { PhotoGallery } from '../sections/PhotoGallery';
-import { Spotlight } from '../sections/Spotlight';
 import { Aftermovie } from '../sections/Aftermovie';
 import { Footer } from '../layout/Footer';
 import { YearKey } from '../../lib/themeData';
+import { ScrollTransition } from '../layout/ScrollTransition';
 
 interface HomePageProps {
   year: YearKey;
@@ -25,14 +26,42 @@ export const HomePage = ({ year, setYear, onNavigate, onNavigateDomain }: HomePa
       <CustomCursor />
       <BackgroundEffects />
       <Navbar year={year} setYear={setYear} />
-      <Hero year={year} />
-      <Spotlight />
-      <Stats />
-      <Events onNavigate={onNavigate} />
-      <Domains onNavigateDomain={onNavigateDomain} />
-      <Aftermovie year={year} />
-      <PhotoGallery />
-      <Footer />
+
+      <ScrollTransition type="parallax" className="z-0">
+        <Hero year={year} />
+      </ScrollTransition>
+
+      <ScrollTransition
+        type="mask"
+        className="z-10 relative bg-[var(--color-bg-main)] shadow-[0_-20px_50px_rgba(0,0,0,0.5)]"
+      >
+        <Stats />
+      </ScrollTransition>
+
+      {/* QUARTET SECTION (Scroll-linked scrub, no mask so sticky works) */}
+      <div className="z-20 relative bg-[var(--color-bg-main)]">
+        <Quartet />
+      </div>
+
+      <ScrollTransition type="mask" className="z-30 relative bg-[var(--color-bg-main)]">
+        <Domains onNavigateDomain={onNavigateDomain} />
+      </ScrollTransition>
+
+      <ScrollTransition type="mask" className="z-40 relative bg-[var(--color-bg-main)]">
+        <Events onNavigate={onNavigate} />
+      </ScrollTransition>
+
+      <ScrollTransition type="mask" className="z-50 relative bg-[var(--color-bg-main)]">
+        <Aftermovie year={year} />
+      </ScrollTransition>
+
+      <ScrollTransition type="mask" className="z-[60] relative bg-[var(--color-bg-main)]">
+        <PhotoGallery />
+      </ScrollTransition>
+
+      <div className="relative z-[70] bg-[var(--color-bg-main)]">
+        <Footer />
+      </div>
     </main>
   );
 };
