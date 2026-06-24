@@ -59,7 +59,7 @@ export const Stats = () => {
                 {!foundFrogs.includes('frog3') && (
                   <button
                     onClick={() => discoverFrog('frog3')}
-                    className="ml-2 text-xl transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0 animate-pulse inline-block"
+                    className="ml-2 text-xl transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0 inline-block"
                     title="You found a frog!"
                   >
                     🐸

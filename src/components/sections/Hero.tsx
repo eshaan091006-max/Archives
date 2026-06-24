@@ -5,7 +5,7 @@ import { YearKey, themeContent } from '../../lib/themeData';
 import { Scene3D } from './Scene3D';
 import { TextReveal } from '../animations/TextReveal';
 import { MagneticWrapper } from '../animations/MagneticWrapper';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Sparkles } from 'lucide-react';
 import { useGamification } from '../../context/GamificationContext';
 
 interface HeroProps {
@@ -67,25 +67,28 @@ export const Hero = ({ year }: HeroProps) => {
           style={{ y: textY, opacity }}
           className="relative z-10 text-center px-6 flex flex-col items-center max-w-5xl mx-auto"
         >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="mb-6 inline-block bg-[var(--color-bg-secondary)]/50 backdrop-blur-md px-6 py-2 rounded-full border border-[var(--color-border-main)]/50"
-          >
-            <span className="text-[var(--color-text-main)] font-['Inter'] tracking-[0.3em] text-sm md:text-base uppercase">
-              {theme.subtitle}
-            </span>
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ delay: 0.1, duration: 0.8 }}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[var(--color-border-main)]/30 bg-[var(--color-bg-secondary)]/50 backdrop-blur-sm"
+            >
+              <span className="text-[var(--color-text-main)] font-['Inter'] tracking-[0.3em] text-sm md:text-base uppercase">
+                {theme.subtitle}
+              </span>
+            </motion.div>
             {!foundFrogs.includes('frog2') && (
               <button
                 onClick={() => discoverFrog('frog2')}
-                className="ml-4 text-xl transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0 animate-pulse inline-block"
+                className="text-xl transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0 inline-block"
                 title="You found a frog!"
               >
                 🐸
               </button>
             )}
-          </motion.div>
+          </div>
 
           <div className="relative mb-8">
             <h1 className="relative z-10 text-6xl md:text-8xl lg:text-[120px] font-['Britannic_Bold'] text-[var(--color-accent-primary)] tracking-widest uppercase leading-none drop-shadow-[0_0_30px_rgba(var(--color-accent-primary),0.3)]">

@@ -66,7 +66,7 @@ export const Navbar = ({ year, setYear }: NavbarProps) => {
             {!foundFrogs.includes('frog1') && (
               <button 
                 onClick={() => discoverFrog('frog1')}
-                className="text-lg transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0 animate-pulse"
+                className="text-lg transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0"
                 title="You found a frog!"
               >
                 🐸

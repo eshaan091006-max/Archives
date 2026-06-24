@@ -86,7 +86,7 @@ const FlipCard = ({ fact, idx }: { fact: any, idx: number }) => {
                 e.stopPropagation();
                 discoverFrog('frog5');
               }}
-              className="absolute bottom-6 right-6 z-50 text-3xl transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0 animate-pulse"
+              className="absolute bottom-6 right-6 z-50 text-3xl transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0"
               title="You found a frog!"
             >
               🐸

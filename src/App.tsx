@@ -8,13 +8,18 @@ import { TeamPage } from './components/pages/TeamPage';
 import { YearKey } from './lib/themeData';
 import { Preloader } from './components/layout/Preloader';
 import { NoiseOverlay } from './components/layout/NoiseOverlay';
-import { GamificationProvider, useGamification } from './context/GamificationContext';
+import { GamificationProvider, useGamification, GamificationNotification } from './context/GamificationContext';
 
 const ThemeWrapper = ({ year, children }: { year: YearKey, children: React.ReactNode }) => {
   const { foundFrogs } = useGamification();
   const themeClass = foundFrogs.length >= 5 ? 'theme-vip-gold' : `theme-${year}`;
   
-  return <div className={themeClass}>{children}</div>;
+  return (
+    <div className={themeClass}>
+      {children}
+      <GamificationNotification />
+    </div>
+  );
 };
 
 function App() {

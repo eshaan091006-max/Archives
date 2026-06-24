@@ -131,7 +131,7 @@ export const Creatives = ({ year }: { year: YearKey }) => {
                   {!foundFrogs.includes('frog4') && (
                     <button
                       onClick={() => discoverFrog('frog4')}
-                      className="absolute top-4 right-4 z-50 text-2xl transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0 animate-pulse"
+                      className="absolute top-4 right-4 z-50 text-2xl transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0"
                       title="You found a frog!"
                     >
                       🐸
