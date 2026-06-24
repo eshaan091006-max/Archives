@@ -1,6 +1,9 @@
 import React from 'react';
+import { usePerformance } from '../../hooks/usePerformance';
 
 export const NoiseOverlay = () => {
+  const { isLowEnd } = usePerformance();
+
   return (
     <div className="fixed inset-0 z-[9999] pointer-events-none opacity-[0.03] mix-blend-difference select-none">
       <svg className="absolute inset-0 w-full h-full opacity-50" xmlns="http://www.w3.org/2000/svg">
@@ -30,7 +33,7 @@ export const NoiseOverlay = () => {
           }
           
           .noise-animate {
-            animation: grain 8s steps(10) infinite;
+            animation: ${isLowEnd ? 'none' : 'grain 8s steps(10) infinite'};
             width: 300%;
             height: 300%;
             left: -100%;
@@ -39,7 +42,7 @@ export const NoiseOverlay = () => {
           }
         `}
       </style>
-      <div className="noise-animate pointer-events-none">
+      <div className={`pointer-events-none ${isLowEnd ? 'absolute inset-0' : 'noise-animate'}`}>
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <rect width="100%" height="100%" filter="url(#noiseFilter)" />
         </svg>

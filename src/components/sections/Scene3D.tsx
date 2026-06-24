@@ -12,13 +12,17 @@ export const Scene3D = ({ accentColor }: { accentColor: string }) => {
     <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none mix-blend-screen">
       {/* Blob 1: Theme Accent Color */}
       <motion.div
-        animate={{
-          x: ['-20%', '20%', '-20%'],
-          y: ['-20%', '20%', '-20%'],
-          rotate: [0, 90, 0],
-          scale: [1, 1.3, 1],
-        }}
-        transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+        animate={
+          isLowEnd
+            ? { x: '-20%', y: '-20%' }
+            : {
+                x: ['-20%', '20%', '-20%'],
+                y: ['-20%', '20%', '-20%'],
+                rotate: [0, 90, 0],
+                scale: [1, 1.3, 1],
+              }
+        }
+        transition={isLowEnd ? { duration: 0 } : { duration: 25, repeat: Infinity, ease: 'linear' }}
         className={`absolute -top-[50%] -left-[50%] w-[200%] h-[200%] rounded-[100%] ${isLowEnd ? 'opacity-30' : 'blur-[120px] opacity-40'} md:opacity-50`}
         style={{
           background: `radial-gradient(circle at center, ${accentColor}, transparent 60%)`,
@@ -27,13 +31,17 @@ export const Scene3D = ({ accentColor }: { accentColor: string }) => {
 
       {/* Blob 2: Secondary Background Color */}
       <motion.div
-        animate={{
-          x: ['20%', '-20%', '20%'],
-          y: ['20%', '-20%', '20%'],
-          rotate: [0, -90, 0],
-          scale: [1, 1.5, 1],
-        }}
-        transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+        animate={
+          isLowEnd
+            ? { x: '20%', y: '20%' }
+            : {
+                x: ['20%', '-20%', '20%'],
+                y: ['20%', '-20%', '20%'],
+                rotate: [0, -90, 0],
+                scale: [1, 1.5, 1],
+              }
+        }
+        transition={isLowEnd ? { duration: 0 } : { duration: 30, repeat: Infinity, ease: 'linear' }}
         className={`absolute -bottom-[50%] -right-[50%] w-[200%] h-[200%] rounded-[100%] ${isLowEnd ? 'opacity-30' : 'blur-[140px] opacity-40'} md:opacity-50`}
         style={{
           background: `radial-gradient(circle at center, var(--color-bg-tertiary), transparent 60%)`,
@@ -42,12 +50,16 @@ export const Scene3D = ({ accentColor }: { accentColor: string }) => {
 
       {/* Blob 3: Secondary Accent Color */}
       <motion.div
-        animate={{
-          x: ['-10%', '10%', '-10%'],
-          y: ['10%', '-10%', '10%'],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+        animate={
+          isLowEnd
+            ? { x: '-10%', y: '10%' }
+            : {
+                x: ['-10%', '10%', '-10%'],
+                y: ['10%', '-10%', '10%'],
+                scale: [1, 1.2, 1],
+              }
+        }
+        transition={isLowEnd ? { duration: 0 } : { duration: 20, repeat: Infinity, ease: 'linear' }}
         className={`absolute top-[10%] left-[10%] w-[150%] h-[150%] rounded-[100%] ${isLowEnd ? 'opacity-20' : 'blur-[100px] opacity-30'} md:opacity-40`}
         style={{
           background: `radial-gradient(circle at center, var(--color-accent-secondary), transparent 70%)`,

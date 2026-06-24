@@ -58,10 +58,12 @@ export const CustomCursor = () => {
         opacity: isHidden ? 0 : isHovering ? 0.8 : 1,
       }}
       transition={{
-        type: 'spring',
-        stiffness: 150,
-        damping: 15,
-        mass: 0.1,
+        x: { type: 'tween', duration: 0 },
+        y: { type: 'tween', duration: 0 },
+        scale: { type: 'spring', stiffness: 150, damping: 15 },
+        backgroundColor: { duration: 0.2 },
+        border: { duration: 0.2 },
+        opacity: { duration: 0.2 }
       }}
     />
   );
