@@ -40,14 +40,22 @@ export const Aftermovie: React.FC<AftermovieProps> = ({ year }) => {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative w-full aspect-video rounded-3xl overflow-hidden border border-[var(--color-border-main)]/50 shadow-xl bg-[var(--color-bg-secondary)]"
+          className="relative w-full aspect-video rounded-[3rem] overflow-hidden border-4 border-[var(--color-border-main)]/30 shadow-[0_30px_60px_rgba(0,0,0,0.4)] bg-[var(--color-bg-secondary)] group"
         >
+          {/* Vintage Film Overlay / CRT Scanline Effect */}
+          <div className="absolute inset-0 z-20 pointer-events-none opacity-20 bg-[url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Dissolve_Noise_Texture.png')] mix-blend-overlay group-hover:opacity-10 transition-opacity duration-1000" />
+          <div className="absolute inset-0 z-20 pointer-events-none bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[length:100%_4px] opacity-20" />
+          
+          {/* Cinematic Vignette */}
+          <div className="absolute inset-0 z-20 pointer-events-none shadow-[inset_0_0_150px_rgba(0,0,0,0.8)] rounded-[3rem]" />
+
           {/* Subtle overlay on iframe wrapper to keep color theme */}
-          <div className="absolute inset-0 bg-[var(--color-accent-primary)]/5 pointer-events-none z-10 mix-blend-overlay transition-colors duration-1000" />
+          <div className="absolute inset-0 bg-[var(--color-accent-primary)]/10 pointer-events-none z-10 mix-blend-overlay transition-colors duration-1000 group-hover:bg-transparent" />
+          
           <iframe
             key={videoId} // Forces iframe to reload when video ID changes
-            className="absolute inset-0 w-full h-full"
-            src={`https://www.youtube.com/embed/${videoId}?rel=0`}
+            className="absolute inset-0 w-full h-full object-cover scale-[1.02]"
+            src={`https://www.youtube.com/embed/${videoId}?rel=0&controls=1&modestbranding=1`}
             title={`Malhar ${year} Aftermovie`}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

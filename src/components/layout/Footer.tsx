@@ -52,7 +52,7 @@ export const Footer = () => {
           >
             MALHAR
           </motion.h1>
-          <div className="w-full flex justify-between items-center mt-8 text-[var(--color-text-main)]/40 font-['Inter'] text-sm">
+          <div className="w-full flex flex-col md:flex-row justify-between items-center mt-8 gap-4 text-[var(--color-text-main)]/40 font-['Inter'] text-sm">
             <span>© {new Date().getFullYear()} Malhar</span>
             <span>All rights reserved</span>
           </div>

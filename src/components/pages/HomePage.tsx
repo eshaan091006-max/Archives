@@ -7,7 +7,9 @@ import { Stats } from '../sections/Stats';
 import { Quartet } from '../sections/Quartet';
 import { Domains } from '../sections/Domains';
 import { Events } from '../sections/Events';
+import { Creatives } from '../sections/Creatives';
 import { PhotoGallery } from '../sections/PhotoGallery';
+import { FunFacts } from '../sections/FunFacts';
 import { Aftermovie } from '../sections/Aftermovie';
 import { Footer } from '../layout/Footer';
 import { YearKey } from '../../lib/themeData';
@@ -40,7 +42,7 @@ export const HomePage = ({ year, setYear, onNavigate, onNavigateDomain }: HomePa
 
       {/* QUARTET SECTION (Scroll-linked scrub, no mask so sticky works) */}
       <div className="z-20 relative bg-[var(--color-bg-main)]">
-        <Quartet />
+        <Quartet year={year} />
       </div>
 
       <ScrollTransition type="mask" className="z-30 relative bg-[var(--color-bg-main)]">
@@ -51,12 +53,20 @@ export const HomePage = ({ year, setYear, onNavigate, onNavigateDomain }: HomePa
         <Events onNavigate={onNavigate} />
       </ScrollTransition>
 
+      <ScrollTransition type="mask" className="z-45 relative bg-[var(--color-bg-main)]">
+        <Creatives year={year} />
+      </ScrollTransition>
+
       <ScrollTransition type="mask" className="z-50 relative bg-[var(--color-bg-main)]">
         <Aftermovie year={year} />
       </ScrollTransition>
 
       <ScrollTransition type="mask" className="z-[60] relative bg-[var(--color-bg-main)]">
         <PhotoGallery />
+      </ScrollTransition>
+
+      <ScrollTransition type="mask" className="z-[65] relative bg-[var(--color-bg-main)]">
+        <FunFacts />
       </ScrollTransition>
 
       <div className="relative z-[70] bg-[var(--color-bg-main)]">

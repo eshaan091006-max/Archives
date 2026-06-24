@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, MotionValue, useMotionValueEvent, useSpring } from 'framer-motion';
+import { YearKey } from '../../lib/themeData';
 
 interface Member {
   id: number;
@@ -72,7 +73,7 @@ const FAN_X      = [-110, -38, 38, 110];
 const FAN_Y      = [20, 0, 0, 20]; // Slight arc for fan
 
 // We create a wrapper component for a single card so we can cleanly use the transforms
-const QuartetCard = ({ member, idx, scrollYProgress, isMobile }: { member: Member, idx: number, scrollYProgress: MotionValue<number>, isMobile: boolean }) => {
+const QuartetCard = ({ member, idx, scrollYProgress, isMobile, year }: { member: Member, idx: number, scrollYProgress: MotionValue<number>, isMobile: boolean, year: YearKey }) => {
   
   // Desktop math
   const CARD_W = 280;
@@ -158,41 +159,18 @@ const QuartetCard = ({ member, idx, scrollYProgress, isMobile }: { member: Membe
       >
         {/* .cardFace .cardBack (Visible initially at 0deg) */}
         <div 
-          className="absolute inset-0 w-full h-full rounded-3xl border border-[var(--color-border-main)]/30 bg-[var(--color-bg-secondary)]/80 backdrop-blur-md shadow-2xl flex items-center justify-center"
+          className="absolute inset-0 w-full h-full rounded-[1.5rem] shadow-2xl overflow-hidden flex items-center justify-center"
           style={{ 
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden'
           }}
         >
-          {/* Subtle top decoration lines */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-12 overflow-hidden opacity-50">
-            <div className="absolute w-32 h-32 rounded-full border border-[var(--color-border-main)]/50 left-1/2 -translate-x-1/2 top-[-100px]" />
-            <div className="absolute w-28 h-28 rounded-full border border-[var(--color-border-main)]/50 left-1/2 -translate-x-1/2 top-[-80px]" />
-            <div className="absolute w-24 h-24 rounded-full border border-[var(--color-border-main)]/50 left-1/2 -translate-x-1/2 top-[-60px]" />
-          </div>
+          <img 
+            src={`/assets/cards/${year}-back.svg`} 
+            alt={`Malhar ${year} Card Back`}
+            className="w-full h-full object-cover scale-[1.06]"
+          />
 
-          {/* Top-Right Rank */}
-          <div className="absolute top-5 right-5 flex flex-col items-center">
-            <span className="text-xl font-['Boldonse'] leading-none text-[var(--color-text-main)]/70">
-              {['A', 'K', 'Q', 'J'][idx]}
-            </span>
-            <span className={`text-xl leading-none ${idx % 2 === 0 ? 'text-[var(--color-text-main)]/70' : 'text-[var(--color-accent-primary)]'}`}>
-              {['♠', '♥', '♦', '♣'][idx]}
-            </span>
-          </div>
-
-          {/* Bottom-Left Rank (Rotated) */}
-          <div className="absolute bottom-5 left-5 flex flex-col items-center rotate-180">
-            <span className="text-xl font-['Boldonse'] leading-none text-[var(--color-text-main)]/70">
-              {['A', 'K', 'Q', 'J'][idx]}
-            </span>
-            <span className={`text-xl leading-none ${idx % 2 === 0 ? 'text-[var(--color-text-main)]/70' : 'text-[var(--color-accent-primary)]'}`}>
-              {['♠', '♥', '♦', '♣'][idx]}
-            </span>
-          </div>
-
-          {/* Left Circle (Theme accent) */}
-          <div className="absolute left-8 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[var(--color-accent-primary)] shadow-[0_0_15px_rgba(var(--color-accent-primary-rgb),0.5)]" />
         </div>
 
         {/* .cardFace .cardFront (Info side natively at 180deg) */}
@@ -234,7 +212,7 @@ const QuartetCard = ({ member, idx, scrollYProgress, isMobile }: { member: Membe
   );
 };
 
-export const Quartet = () => {
+export const Quartet = ({ year }: { year: YearKey }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -252,6 +230,7 @@ export const Quartet = () => {
 
   return (
     <section 
+      id="workforce"
       ref={containerRef} 
       className="relative w-full min-h-screen py-24 flex flex-col items-center overflow-hidden bg-[var(--color-bg-main)]"
     >
@@ -278,6 +257,7 @@ export const Quartet = () => {
                 idx={idx} 
                 scrollYProgress={scrollYProgress} 
                 isMobile={isMobile}
+                year={year}
               />
             ))}
           </div>

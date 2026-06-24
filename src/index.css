@@ -20,6 +20,25 @@ body {
   box-sizing: border-box;
   overflow: auto;
   overscroll-behavior-x: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent-primary);
+  border-radius: 10px;
+  opacity: 0.8;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-secondary);
 }
 
 @theme inline {
@@ -272,6 +291,17 @@ img.broken-image-fallback {
     --color-text-main: #ffffff;
     --color-text-highlight: #ead5a8;
     --color-border-main: #dfb86d;
+  }
+
+  .theme-vip-gold {
+    --color-bg-main: #0a0a0a;
+    --color-bg-secondary: #171717;
+    --color-bg-tertiary: #262626;
+    --color-accent-primary: #ffd700;
+    --color-accent-secondary: #b8860b;
+    --color-text-main: #ffffff;
+    --color-text-highlight: #ffdf00;
+    --color-border-main: rgba(255, 215, 0, 0.3);
   }
 }
 

@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { AnimatedDivider } from '../animations/AnimatedDivider';
 import { InteractiveImage } from '../animations/InteractiveImage';
 import { FastAverageColor } from 'fast-average-color';
+import { useGamification } from '../../context/GamificationContext';
 
 const images = [
   'https://images.unsplash.com/photo-1540039155732-d6749b10a264?q=80&w=2000&auto=format&fit=crop', // Crowd
@@ -19,6 +20,7 @@ export const Gallery = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [tweenValues, setTweenValues] = useState<number[]>([]);
   const facRef = useRef(new FastAverageColor());
+  const { discoverFrog, foundFrogs } = useGamification();
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -108,9 +110,9 @@ export const Gallery = () => {
           viewport={{ once: true }}
           className="flex flex-col md:flex-row justify-between items-end gap-6 mb-8"
         >
-          <div>
+          <div className="flex items-center gap-4">
             <h2 className="text-[var(--color-accent-primary)] text-5xl md:text-8xl font-['Britannic_Bold'] tracking-[0.2em] uppercase mb-4 leading-none">
-              Aftermovie
+              Gallery
             </h2>
           </div>
 
@@ -146,7 +148,7 @@ export const Gallery = () => {
                 }`}
               >
                 <div
-                  className="absolute inset-0 w-[140%] -left-[20%]"
+                  className="absolute inset-0 w-[140%] -left-[20%] group"
                   style={{
                     transform: tweenValues.length
                       ? `translate3d(${tweenValues[index]}%, 0, 0)`
@@ -156,14 +158,14 @@ export const Gallery = () => {
                   <InteractiveImage
                     src={src}
                     alt={`Gallery ${index}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
                   />
                 </div>
 
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-main)]/80 via-transparent to-transparent opacity-60 pointer-events-none" />
 
-                <div className="absolute bottom-10 left-10 text-[var(--color-text-main)] font-['Boldonse'] text-3xl uppercase tracking-wider pointer-events-none">
+                <div className="absolute bottom-10 left-10 text-[var(--color-text-main)] font-['Boldonse'] text-3xl uppercase tracking-wider pointer-events-none z-10">
                   0{index + 1}
                 </div>
               </div>

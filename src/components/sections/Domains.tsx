@@ -124,9 +124,24 @@ const TiltCard = ({
         <h3 className="text-3xl font-['Boldonse'] text-[var(--color-text-main)] mb-4 uppercase">
           {domain.title}
         </h3>
-        <p className="text-[var(--color-text-highlight)] font-['Inter'] leading-relaxed">
+        <p className="text-[var(--color-text-highlight)] font-['Inter'] leading-relaxed mb-6">
           {domain.description}
         </p>
+      </div>
+      <div className="pt-6 border-t border-[var(--color-border-main)]/20 mt-auto relative z-10">
+        <h4 className="text-[var(--color-text-main)]/60 font-['Inter'] uppercase tracking-[0.2em] text-xs font-bold mb-4">
+          Departments
+        </h4>
+        <div className="flex flex-wrap gap-2">
+          {domain.departments.map((dept: string, i: number) => (
+            <span
+              key={i}
+              className="px-4 py-2 bg-[var(--color-bg-main)]/50 backdrop-blur-md rounded-full text-xs font-['Inter'] font-semibold tracking-wider text-[var(--color-text-main)] border border-[var(--color-border-main)]/30 hover:border-[var(--color-accent-primary)]/50 transition-colors shadow-sm"
+            >
+              {dept}
+            </span>
+          ))}
+        </div>
       </div>
     </motion.button>
   );
@@ -154,7 +169,7 @@ export const Domains = ({ onNavigateDomain }: { onNavigateDomain: (domain: any) 
           viewport={{ once: true }}
           className="mb-20"
         >
-          <h2 className="text-[var(--color-accent-secondary)] text-5xl md:text-8xl font-['Britannic_Bold'] tracking-[0.2em] uppercase mb-6">
+          <h2 className="text-[var(--color-accent-secondary)] text-5xl md:text-8xl font-['Britannic_Bold'] tracking-[0.2em] uppercase mb-6 bg-clip-text text-transparent bg-gradient-to-br from-[var(--color-text-main)] to-[var(--color-text-main)]/50">
             Domains
           </h2>
           <AnimatedDivider className="text-[var(--color-border-main)]/30" />

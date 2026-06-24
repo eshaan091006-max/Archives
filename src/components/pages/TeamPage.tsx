@@ -1,18 +1,22 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Users, Star, Award } from 'lucide-react';
 import { useSound } from '../../hooks/useSound';
 import { getTeamData } from '../../lib/teamData';
 
+import { YearKey } from '../../lib/themeData';
+
 interface TeamPageProps {
   department: string;
+  year: YearKey;
   onBack: () => void;
 }
 
-export const TeamPage = ({ department, onBack }: TeamPageProps) => {
+export const TeamPage = ({ department, year, onBack }: TeamPageProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { playTransition, playHover } = useSound();
   const teamData = getTeamData(department);
+  const [activeTab, setActiveTab] = useState<'core' | 'workforce'>('core');
 
   useEffect(() => {
     playTransition();
@@ -90,89 +94,140 @@ export const TeamPage = ({ department, onBack }: TeamPageProps) => {
           </motion.div>
         </div>
 
-        {/* Team Members Section */}
-        <div className="max-w-5xl mx-auto pb-12">
-          
-          {/* OC Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="flex flex-col items-center"
+        {/* Tab Switcher */}
+        <div className="flex justify-center gap-4 mt-16 mb-8 relative z-10 px-6">
+          <button
+            onClick={() => setActiveTab('core')}
+            className={`px-8 py-3 rounded-full font-['Inter'] font-bold tracking-widest uppercase transition-all duration-300 ${
+              activeTab === 'core'
+                ? 'bg-[var(--color-accent-primary)] text-[var(--color-bg-main)] shadow-[0_0_20px_rgba(var(--color-accent-primary-rgb),0.4)]'
+                : 'border border-[var(--color-border-main)] text-[var(--color-text-main)]/60 hover:text-[var(--color-text-main)] hover:border-[var(--color-accent-primary)]/50'
+            }`}
           >
-            <div className="relative group cursor-default">
-              <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-secondary)] rounded-[2rem] blur-xl opacity-30 group-hover:opacity-60 transition-opacity duration-700" />
-              <div className="relative w-full min-w-[320px] md:min-w-[450px] p-12 rounded-[2rem] bg-[var(--color-bg-secondary)]/80 backdrop-blur-2xl border border-[var(--color-accent-primary)]/40 text-center shadow-2xl flex flex-col items-center gap-5 hover:-translate-y-2 transition-transform duration-500">
-                <div className="w-20 h-20 rounded-full bg-[var(--color-bg-main)] border border-[var(--color-accent-primary)] flex items-center justify-center mb-2 shadow-[0_0_30px_rgba(var(--color-accent-primary-rgb),0.3)]">
-                  <Award className="w-8 h-8 text-[var(--color-accent-primary)]" />
+            Core
+          </button>
+          <button
+            onClick={() => setActiveTab('workforce')}
+            className={`px-8 py-3 rounded-full font-['Inter'] font-bold tracking-widest uppercase transition-all duration-300 ${
+              activeTab === 'workforce'
+                ? 'bg-[var(--color-accent-primary)] text-[var(--color-bg-main)] shadow-[0_0_20px_rgba(var(--color-accent-primary-rgb),0.4)]'
+                : 'border border-[var(--color-border-main)] text-[var(--color-text-main)]/60 hover:text-[var(--color-text-main)] hover:border-[var(--color-accent-primary)]/50'
+            }`}
+          >
+            Workforce
+          </button>
+        </div>
+
+        {/* Core Tab */}
+        {activeTab === 'core' && (
+          <div className="max-w-5xl mx-auto pb-12 mt-8 px-6">
+            {/* OC Section */}
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center">
+              <div className="relative group cursor-default">
+                <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-secondary)] rounded-[2rem] blur-xl opacity-30 group-hover:opacity-60 transition-opacity duration-700" />
+                <div className="relative w-full min-w-[320px] md:min-w-[450px] p-12 rounded-[2rem] bg-[var(--color-bg-secondary)]/80 backdrop-blur-2xl border border-[var(--color-accent-primary)]/40 text-center shadow-2xl flex flex-col items-center gap-5 hover:-translate-y-2 transition-transform duration-500">
+                  <span className="text-xs font-['Inter'] uppercase tracking-[0.3em] text-[var(--color-accent-primary)] font-bold flex items-center gap-2">
+                    Organizer in Charge (OC)
+                  </span>
+                  <p className="text-5xl font-['Boldonse'] text-[var(--color-text-main)]">{teamData.oc}</p>
                 </div>
-                <span className="text-xs font-['Inter'] uppercase tracking-[0.3em] text-[var(--color-accent-primary)] font-bold flex items-center gap-2">
-                  <Award className="w-4 h-4" /> Organizer in Charge (OC)
-                </span>
-                <p className="text-5xl font-['Boldonse'] text-[var(--color-text-main)]">
-                  {teamData.oc}
-                </p>
+              </div>
+            </motion.div>
+
+            {/* OGs Section */}
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col items-center mt-24">
+              <div className="flex items-center gap-6 mb-12">
+                <div className="h-[1px] w-16 bg-gradient-to-r from-transparent to-[var(--color-accent-secondary)]" />
+                <h2 className="text-2xl font-['Boldonse'] uppercase text-[var(--color-text-main)] tracking-[0.15em]">Organizers (OGs)</h2>
+                <div className="h-[1px] w-16 bg-gradient-to-l from-transparent to-[var(--color-accent-secondary)]" />
+              </div>
+              <div className="flex flex-wrap justify-center gap-8 w-full">
+                {teamData.ogs.map((og, idx) => (
+                  <div key={idx} className="group relative min-w-[260px]">
+                    <div className="absolute inset-0 bg-[var(--color-accent-secondary)]/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative px-8 py-10 rounded-2xl bg-[var(--color-bg-secondary)]/60 backdrop-blur-md border border-[var(--color-border-main)]/30 group-hover:border-[var(--color-accent-secondary)]/50 text-center transition-all duration-500 flex flex-col items-center gap-4 hover:-translate-y-3 hover:shadow-2xl">
+                      <p className="text-xl font-['Inter'] text-[var(--color-text-main)]/90 font-medium tracking-wide">{og}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Coordis Section */}
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-col items-center mt-24">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[var(--color-border-main)]" />
+                <h2 className="text-xs font-['Inter'] uppercase text-[var(--color-text-main)]/50 tracking-[0.25em] font-bold">Coordinators (Coordis)</h2>
+                <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[var(--color-border-main)]" />
+              </div>
+              <div className="flex flex-wrap justify-center gap-4 w-full max-w-4xl">
+                {teamData.coordis.map((coordi, idx) => (
+                  <div key={idx} className="px-8 py-3 rounded-full border border-[var(--color-border-main)]/20 bg-[var(--color-bg-secondary)]/30 backdrop-blur-sm text-center hover:bg-[var(--color-bg-secondary)] hover:border-[var(--color-border-main)]/50 transition-colors duration-300 cursor-default">
+                    <p className="text-sm font-['Inter'] text-[var(--color-text-main)]/70 tracking-wide">{coordi}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Workforce Tab */}
+        {activeTab === 'workforce' && (
+          <div className="max-w-4xl mx-auto pb-24 relative mt-8 px-6">
+            {/* Header */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 relative z-10"
+            >
+              <div className="flex justify-between items-center mb-6 text-[#F5A623] font-serif text-sm tracking-widest uppercase">
+                <span>MALHAR {year}</span>
+                <span>{department}</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-['Inter'] font-bold text-[var(--color-text-main)] uppercase tracking-wide">
+                THE WORKFORCE
+              </h2>
+              <p className="text-[var(--color-text-main)]/60 font-serif italic mt-2 text-lg">
+                The people who made it happen.
+              </p>
+            </motion.div>
+
+            {/* Diagonal Line Separator */}
+            <motion.div 
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 1, ease: 'easeOut' }}
+              className="w-full h-1 bg-[#F5A623] origin-left rotate-[-2deg] mb-16 relative z-10"
+            />
+
+            {/* Watermark Dynamic */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[300px] md:text-[500px] font-serif text-white/5 pointer-events-none select-none z-0">
+              {year.slice(-2)}
+            </div>
+
+            {/* Scrollable Workforce List */}
+            <div className="max-h-[600px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-[var(--color-accent-primary)]/50 scrollbar-track-transparent">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-y-10 gap-x-16 relative z-10 pl-4 md:pl-12">
+                {teamData.workforce.map((name, idx) => (
+                  <motion.div 
+                    key={idx}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="flex items-center gap-6 group"
+                  >
+                    <span className="text-xl md:text-2xl font-serif text-white/50 w-8 text-right group-hover:text-[#F5A623] transition-colors">
+                      {(idx + 1).toString().padStart(2, '0')}
+                    </span>
+                    <span className="text-lg md:text-xl font-['Boldonse'] text-white tracking-widest uppercase group-hover:text-[#F5A623] transition-colors">
+                      {name}
+                    </span>
+                  </motion.div>
+                ))}
               </div>
             </div>
-          </motion.div>
-
-          {/* OGs Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="flex flex-col items-center mt-24"
-          >
-            <div className="flex items-center gap-6 mb-12">
-              <div className="h-[1px] w-16 bg-gradient-to-r from-transparent to-[var(--color-accent-secondary)]" />
-              <h2 className="text-2xl font-['Boldonse'] uppercase text-[var(--color-text-main)] tracking-[0.15em]">
-                Organizers (OGs)
-              </h2>
-              <div className="h-[1px] w-16 bg-gradient-to-l from-transparent to-[var(--color-accent-secondary)]" />
-            </div>
-            
-            <div className="flex flex-wrap justify-center gap-8 w-full">
-              {teamData.ogs.map((og, idx) => (
-                <div key={idx} className="group relative min-w-[260px]">
-                  <div className="absolute inset-0 bg-[var(--color-accent-secondary)]/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative px-8 py-10 rounded-2xl bg-[var(--color-bg-secondary)]/60 backdrop-blur-md border border-[var(--color-border-main)]/30 group-hover:border-[var(--color-accent-secondary)]/50 text-center transition-all duration-500 flex flex-col items-center gap-4 hover:-translate-y-3 hover:shadow-2xl">
-                    <Star className="w-8 h-8 text-[var(--color-accent-secondary)] opacity-40 group-hover:opacity-100 transition-opacity duration-500 mb-2" />
-                    <p className="text-xl font-['Inter'] text-[var(--color-text-main)]/90 font-medium tracking-wide">
-                      {og}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Coordis Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="flex flex-col items-center mt-24"
-          >
-            <div className="flex items-center gap-4 mb-10">
-              <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[var(--color-border-main)]" />
-              <h2 className="text-xs font-['Inter'] uppercase text-[var(--color-text-main)]/50 tracking-[0.25em] font-bold">
-                Coordinators (Coordis)
-              </h2>
-              <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[var(--color-border-main)]" />
-            </div>
-            
-            <div className="flex flex-wrap justify-center gap-4 w-full max-w-4xl">
-              {teamData.coordis.map((coordi, idx) => (
-                <div key={idx} className="px-8 py-3 rounded-full border border-[var(--color-border-main)]/20 bg-[var(--color-bg-secondary)]/30 backdrop-blur-sm text-center hover:bg-[var(--color-bg-secondary)] hover:border-[var(--color-border-main)]/50 transition-colors duration-300 cursor-default">
-                  <p className="text-sm font-['Inter'] text-[var(--color-text-main)]/70 tracking-wide">
-                    {coordi}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-        </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );

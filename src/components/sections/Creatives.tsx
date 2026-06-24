@@ -1,0 +1,174 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { AnimatedDivider } from '../animations/AnimatedDivider';
+import { YearKey } from '../../lib/themeData';
+import { useGamification } from '../../context/GamificationContext';
+
+export const Creatives = ({ year }: { year: YearKey }) => {
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const { discoverFrog, foundFrogs } = useGamification();
+
+  const creativeNames = ["NAME 1", "NAME 2", "NAME 3", "NAME 4", "NAME 5"];
+
+  const nextSlide = () => {
+    setCarouselIndex((prev) => (prev + 1) % creativeNames.length);
+  };
+
+  const prevSlide = () => {
+    setCarouselIndex((prev) => (prev - 1 + creativeNames.length) % creativeNames.length);
+  };
+
+  return (
+    <section id="creatives" className="relative py-32 bg-[var(--color-bg-main)] overflow-hidden transition-colors duration-500">
+      
+      {/* Subtle Background Watermark */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none z-0 overflow-hidden opacity-30">
+        <div className="text-[150px] md:text-[300px] font-['Britannic_Bold'] text-[var(--color-border-main)]/[0.05] tracking-widest uppercase select-none whitespace-nowrap">
+          CREATIVES
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-20 text-center md:text-left"
+        >
+          <h2 className="text-[var(--color-accent-primary)] text-5xl md:text-8xl font-['Britannic_Bold'] tracking-[0.2em] uppercase mb-6 drop-shadow-sm">
+            Creatives
+          </h2>
+          <AnimatedDivider className="text-[var(--color-border-main)]/30" />
+        </motion.div>
+
+        <div className="flex flex-col lg:flex-row gap-12 mb-20">
+          
+          {/* Theme Brief Card */}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="flex-1 relative rounded-3xl bg-gradient-to-br from-[var(--color-bg-secondary)]/80 to-[var(--color-bg-main)]/90 backdrop-blur-xl border border-[var(--color-border-main)]/40 p-8 md:p-14 shadow-lg flex flex-col justify-center"
+          >
+            {/* Watermark wrapper */}
+            <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[120px] md:text-[220px] font-['Britannic_Bold'] text-[var(--color-text-main)]/[0.04] select-none whitespace-nowrap">
+                MALHAR
+              </div>
+            </div>
+            
+            <div className="relative z-10 flex flex-col gap-8">
+              <div className="bg-[var(--color-bg-main)]/50 border border-[var(--color-accent-primary)]/40 text-[var(--color-accent-primary)] text-xs font-['Inter'] font-bold tracking-[0.3em] px-6 py-2.5 rounded-full w-max uppercase backdrop-blur-md">
+                Theme Brief
+              </div>
+              <h3 className="text-3xl md:text-5xl lg:text-6xl font-serif italic text-[var(--color-text-main)]/95 leading-[1.2]">
+                "THE WORLD WITHIN US<br/>A SYMBOL OF UNITY"
+              </h3>
+            </div>
+          </motion.div>
+
+          {/* Description Card */}
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="lg:w-1/3 rounded-3xl bg-[var(--color-accent-primary)]/10 backdrop-blur-md border border-[var(--color-accent-primary)]/30 p-8 md:p-12 shadow-sm flex flex-col justify-center relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent-primary)]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <h4 className="text-[var(--color-accent-primary)] text-sm font-['Inter'] font-bold uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
+              <span className="w-8 h-[1px] bg-[var(--color-accent-primary)]/50"></span>
+              Description
+            </h4>
+            <p className="text-[var(--color-text-main)]/90 text-base md:text-lg font-['Inter'] tracking-widest leading-[1.8] font-medium uppercase relative z-10">
+              Malhar {year === '2023' ? '2023' : year === '2024' ? '2024' : '2025'} explores the inner universe we all carry — a celebration of identity, expression and togetherness across every department and team
+            </p>
+          </motion.div>
+
+        </div>
+
+        {/* Separator */}
+        <div className="flex items-center gap-6 mb-20 max-w-2xl mx-auto opacity-70">
+          <div className="h-[1px] flex-1 bg-[var(--color-border-main)]/30" />
+          <Star className="w-6 h-6 text-[var(--color-accent-primary)] fill-[var(--color-accent-primary)]" />
+          <div className="h-[1px] flex-1 bg-[var(--color-border-main)]/30" />
+        </div>
+
+        {/* Carousel */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="relative w-full rounded-3xl border border-[var(--color-border-main)]/30 bg-[var(--color-bg-secondary)]/30 backdrop-blur-sm p-6 md:p-16 flex items-center justify-between"
+        >
+          <button onClick={prevSlide} className="w-12 h-12 rounded-full border border-[var(--color-accent-primary)]/50 flex items-center justify-center shrink-0 hover:bg-[var(--color-accent-primary)]/10 transition-colors z-20 group">
+            <ChevronLeft className="w-6 h-6 text-[var(--color-accent-primary)] group-hover:-translate-x-1 transition-transform" />
+          </button>
+
+          <div className="flex-1 overflow-hidden relative mx-4 md:mx-12 h-[500px]">
+            <div className="flex items-center justify-center absolute top-0 left-0 w-full h-full gap-8">
+              
+              {/* Left Ghost Card */}
+              <div className="w-48 md:w-64 h-[350px] md:h-[400px] border border-[var(--color-border-main)]/30 rounded-2xl bg-[var(--color-bg-secondary)]/40 flex flex-col justify-end overflow-hidden blur-[2px] opacity-60 hidden md:flex shrink-0 relative group/ghost">
+                <div className="absolute inset-0 flex items-center justify-center text-[var(--color-text-main)]/20 font-serif uppercase tracking-widest text-xl">Photo</div>
+                <div className="border-t border-[var(--color-border-main)]/30 py-4 text-center bg-[var(--color-bg-main)]/80 backdrop-blur-md">
+                  <span className="text-[var(--color-text-main)] font-serif uppercase tracking-[0.1em] text-sm opacity-50">
+                    {creativeNames[(carouselIndex - 1 + creativeNames.length) % creativeNames.length]}
+                  </span>
+                </div>
+              </div>
+
+              {/* Center Main Card */}
+              <AnimatePresence mode="popLayout">
+                <motion.div
+                  key={carouselIndex}
+                  initial={{ opacity: 0, scale: 0.9, x: 50 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, x: -50 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="w-64 md:w-[320px] h-[400px] md:h-[480px] border border-[var(--color-accent-primary)]/50 rounded-[32px] flex flex-col justify-end bg-[var(--color-bg-secondary)] shadow-2xl z-10 shrink-0 overflow-hidden relative shadow-[inset_0_0_40px_rgba(0,0,0,0.4)]"
+                >
+                  {!foundFrogs.includes('frog4') && (
+                    <button
+                      onClick={() => discoverFrog('frog4')}
+                      className="absolute top-4 right-4 z-50 text-2xl transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0 animate-pulse"
+                      title="You found a frog!"
+                    >
+                      🐸
+                    </button>
+                  )}
+                  <div className="absolute inset-0 border-4 border-white/5 rounded-[32px] pointer-events-none z-20" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-main)] via-[var(--color-bg-main)]/20 to-transparent pointer-events-none z-0" />
+                  <div className="absolute inset-0 flex items-center justify-center text-[var(--color-text-main)]/30 font-serif uppercase tracking-widest text-3xl z-0 font-medium drop-shadow-md">
+                    Photo
+                  </div>
+                  <div className="border-t border-[var(--color-accent-primary)]/30 py-6 text-center bg-[var(--color-bg-main)]/90 backdrop-blur-xl relative z-10 w-full">
+                    <span className="text-[var(--color-text-main)] font-serif uppercase tracking-[0.2em] text-lg font-bold">
+                      {creativeNames[carouselIndex]}
+                    </span>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Right Ghost Card */}
+              <div className="w-48 md:w-64 h-[350px] md:h-[400px] border border-[var(--color-border-main)]/30 rounded-2xl bg-[var(--color-bg-secondary)]/40 flex flex-col justify-end overflow-hidden blur-[2px] opacity-60 hidden md:flex shrink-0">
+                <div className="absolute inset-0 flex items-center justify-center text-[var(--color-text-main)]/20 font-serif uppercase tracking-widest text-xl">Photo</div>
+                <div className="border-t border-[var(--color-border-main)]/30 py-4 text-center bg-[var(--color-bg-main)]/80 backdrop-blur-md">
+                  <span className="text-[var(--color-text-main)] font-serif uppercase tracking-[0.1em] text-sm opacity-50">
+                    {creativeNames[(carouselIndex + 1) % creativeNames.length]}
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <button onClick={nextSlide} className="w-12 h-12 rounded-full border border-[var(--color-accent-primary)]/50 flex items-center justify-center shrink-0 hover:bg-[var(--color-accent-primary)]/10 transition-colors z-20 group">
+            <ChevronRight className="w-6 h-6 text-[var(--color-accent-primary)] group-hover:translate-x-1 transition-transform" />
+          </button>
+        </motion.div>
+
+      </div>
+    </section>
+  );
+};

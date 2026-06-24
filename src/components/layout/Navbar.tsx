@@ -4,6 +4,8 @@ import { Volume2, VolumeX } from 'lucide-react';
 import { YearKey, themeContent } from '../../lib/themeData';
 import { MagneticWrapper } from '../animations/MagneticWrapper';
 import { useSound } from '../../hooks/useSound';
+import { useLenis } from 'lenis/react';
+import { useGamification } from '../../context/GamificationContext';
 
 interface NavbarProps {
   year: YearKey;
@@ -12,8 +14,11 @@ interface NavbarProps {
 
 export const Navbar = ({ year, setYear }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const { soundEnabled, toggleSound, playHover } = useSound();
   const theme = themeContent[year];
+  const lenis = useLenis();
+  const { discoverFrog, foundFrogs } = useGamification();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,7 +38,11 @@ export const Navbar = ({ year, setYear }: NavbarProps) => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      if (lenis) {
+        lenis.scrollTo(element, { offset: -50, duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+      } else {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -44,27 +53,76 @@ export const Navbar = ({ year, setYear }: NavbarProps) => {
       transition={{ duration: 0.5 }}
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-[var(--color-bg-main)]/80 backdrop-blur-md border-b border-[var(--color-border-main)]/20 py-4'
+          ? 'bg-[var(--color-bg-main)]/70 backdrop-blur-xl border-b border-[var(--color-border-main)]/20 py-4 shadow-sm'
           : 'bg-transparent py-6'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <div className="text-[var(--color-text-highlight)] font-['Alexandria'] uppercase font-semibold tracking-widest text-sm border border-[var(--color-border-main)] p-2 shadow-[2px_2px_0px_var(--color-border-main)]">
-          {theme.year} · {theme.title} · malhar
+        <div className="relative group no-cursor-scale z-50">
+          <div className="flex items-center gap-2">
+            <div className="text-[var(--color-text-highlight)] font-['Alexandria'] uppercase font-semibold tracking-widest text-sm border border-[var(--color-border-main)] p-2 shadow-[2px_2px_0px_var(--color-border-main)] cursor-pointer hover:bg-[var(--color-bg-secondary)] transition-colors whitespace-nowrap">
+              {theme.year} · {theme.title} · malhar
+            </div>
+            {!foundFrogs.includes('frog1') && (
+              <button 
+                onClick={() => discoverFrog('frog1')}
+                className="text-lg transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0 animate-pulse"
+                title="You found a frog!"
+              >
+                🐸
+              </button>
+            )}
+          </div>
+          
+          <div className="absolute left-0 mt-2 min-w-[300px] bg-[var(--color-bg-secondary)] border border-[var(--color-border-main)] rounded-none shadow-[2px_2px_0px_var(--color-border-main)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            {(['2023', '2024', '2025'] as YearKey[]).map(y => {
+              const yTheme = themeContent[y];
+              return (
+                <button
+                  key={y}
+                  onClick={() => setYear(y)}
+                  className={`w-full text-left px-3 py-3 text-xs font-['Alexandria'] font-bold uppercase tracking-widest hover:bg-[var(--color-accent-primary)] hover:text-[var(--color-bg-main)] transition-colors border-b border-[var(--color-border-main)]/20 last:border-0 ${y === year ? 'text-[var(--color-accent-primary)]' : 'text-[var(--color-text-main)]'}`}
+                >
+                  {y} · {yTheme.title}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="hidden md:flex gap-8 items-center">
+        <div 
+          className="hidden md:flex gap-2 items-center"
+          onMouseLeave={() => setHoveredLink(null)}
+        >
           {navLinks.map(link => (
             <MagneticWrapper key={link.id}>
-              <button
-                onClick={() => scrollToSection(link.id)}
-                onMouseEnter={playHover}
-                className="text-[var(--color-text-highlight)] hover:text-[var(--color-text-main)] transition-colors duration-200 text-sm tracking-wider font-semibold uppercase"
+              <div
+                className="relative px-4 py-2"
+                onMouseEnter={() => {
+                  setHoveredLink(link.id);
+                  playHover();
+                }}
               >
-                {link.label}
-              </button>
+                {hoveredLink === link.id && (
+                  <motion.div
+                    layoutId="navbar-pill"
+                    className="absolute inset-0 bg-[var(--color-bg-secondary)]/80 backdrop-blur-md rounded-full -z-10 border border-[var(--color-border-main)]/30"
+                    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  />
+                )}
+                <button
+                  onClick={() => scrollToSection(link.id)}
+                  className={`relative z-10 transition-colors duration-200 text-sm tracking-widest font-bold uppercase ${
+                    hoveredLink === link.id ? 'text-[var(--color-accent-primary)]' : 'text-[var(--color-text-highlight)]'
+                  }`}
+                >
+                  {link.label}
+                </button>
+              </div>
             </MagneticWrapper>
           ))}
+
+          <div className="w-[1px] h-6 bg-[var(--color-border-main)]/30 mx-4" />
 
           <button
             onClick={toggleSound}
@@ -74,25 +132,6 @@ export const Navbar = ({ year, setYear }: NavbarProps) => {
             {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
           </button>
 
-          <div className="relative group ml-4 no-cursor-scale">
-            <MagneticWrapper>
-              <button className="px-6 py-2 rounded-full border border-[var(--color-accent-secondary)] text-[var(--color-text-main)] font-['Britannic_Bold'] tracking-widest text-sm hover:bg-[var(--color-accent-secondary)] hover:text-[var(--color-bg-main)] transition-all duration-500 uppercase">
-                THEME: {year}
-              </button>
-            </MagneticWrapper>
-
-            <div className="absolute right-0 mt-2 w-32 bg-[var(--color-bg-secondary)] border border-[var(--color-border-main)]/30 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-              {(['2023', '2024', '2025'] as YearKey[]).map(y => (
-                <button
-                  key={y}
-                  onClick={() => setYear(y)}
-                  className={`w-full text-left px-4 py-2 text-sm font-bold uppercase tracking-widest hover:bg-[var(--color-accent-primary)] hover:text-[var(--color-bg-main)] transition-colors ${y === year ? 'text-[var(--color-accent-primary)]' : 'text-[var(--color-text-main)]'}`}
-                >
-                  {y}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </motion.nav>

@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Sparkles, BookOpen, Feather, Theater, Music, Palette } from 'lucide-react';
+import { ArrowLeft, Sparkles, BookOpen, Feather, Theater, Music, Palette, X } from 'lucide-react';
 import { useSound } from '../../hooks/useSound';
 import { YearKey } from '../../lib/themeData';
 import { eventsData } from '../../lib/eventsData';
+import { useGamification } from '../../context/GamificationContext';
 
 interface DepartmentPageProps {
   id: string;
@@ -863,6 +864,7 @@ const SwarTaalCursor = ({ isIpaActive }: { isIpaActive: boolean }) => {
 
 const SwarTaalBackground = ({ isIpaActive }: { isIpaActive: boolean }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const activeAudiosRef = useRef<HTMLAudioElement[]>([]);
 
   const stringsRef = useRef<
     Array<{
@@ -883,6 +885,7 @@ const SwarTaalBackground = ({ isIpaActive }: { isIpaActive: boolean }) => {
   >([]);
 
   const mousePosRef = useRef({ x: 0, y: 0 });
+  const lastPluckRef = useRef<number[]>([0, 0, 0, 0, 0, 0]);
 
   useEffect(() => {
     if (!isIpaActive) return;
@@ -918,9 +921,35 @@ const SwarTaalBackground = ({ isIpaActive }: { isIpaActive: boolean }) => {
     window.addEventListener('resize', handleResize);
 
     const handleMouseMove = (e: MouseEvent) => {
+      const prevY = mousePosRef.current.y;
+      const currY = e.clientY;
       mousePosRef.current = { x: e.clientX, y: e.clientY };
 
-      stringsRef.current.forEach(string => {
+      stringsRef.current.forEach((string, stringIndex) => {
+        // Detect if mouse crossed this string
+        if (prevY !== 0) {
+          const crossed = (prevY < string.baseY && currY >= string.baseY) || 
+                          (prevY > string.baseY && currY <= string.baseY);
+          
+          if (crossed) {
+            const now = Date.now();
+            if (now - lastPluckRef.current[stringIndex] > 150) {
+              lastPluckRef.current[stringIndex] = now;
+              // Play sound for this string with pitch based on string index
+              const audio = new Audio(SITAR_SOUND);
+              audio.volume = 0.3; // Increased to ensure it's audible
+              // Top string (0) has highest pitch, bottom string (5) has lowest
+              audio.playbackRate = 1.6 - (stringIndex * 0.18); 
+              audio.play().catch(() => {});
+              
+              activeAudiosRef.current.push(audio);
+              audio.onended = () => {
+                activeAudiosRef.current = activeAudiosRef.current.filter(a => a !== audio);
+              };
+            }
+          }
+        }
+
         const distY = Math.abs(e.clientY - string.baseY);
         if (distY < 60) {
           const forceFactor = (1 - distY / 60) * 8;
@@ -955,10 +984,14 @@ const SwarTaalBackground = ({ isIpaActive }: { isIpaActive: boolean }) => {
       });
 
       const audio = new Audio(SITAR_SOUND);
-      audio.volume = 0.15;
-      // Start at a random offset to make each pluck unique
-      audio.currentTime = Math.random() * 10;
+      audio.volume = 0.4; // Slightly louder click pulse
+      audio.playbackRate = 0.8 + Math.random() * 0.4;
       audio.play().catch(() => {});
+      
+      activeAudiosRef.current.push(audio);
+      audio.onended = () => {
+        activeAudiosRef.current = activeAudiosRef.current.filter(a => a !== audio);
+      };
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -1067,6 +1100,13 @@ const SwarTaalBackground = ({ isIpaActive }: { isIpaActive: boolean }) => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
       cancelAnimationFrame(animationId);
+      
+      // Stop all playing sitar sounds when exiting the page
+      activeAudiosRef.current.forEach(audio => {
+        audio.pause();
+        audio.src = '';
+      });
+      activeAudiosRef.current = [];
     };
   }, [isIpaActive]);
 
@@ -1183,10 +1223,6 @@ const EtcwBackground = ({ isEtcwActive }: { isEtcwActive: boolean }) => {
           spin: (Math.random() - 0.5) * 6,
         });
       }
-
-      const audio = new Audio(APPLAUSE_SOUND);
-      audio.volume = 0.12;
-      audio.play().catch(() => {});
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -1446,6 +1482,27 @@ const PremiumManuscriptCard = ({
               </span>
             ))}
           </div>
+
+          {(event.judgeName || event.winnerName) && (
+            <div className="border-t border-rose-500/30 pt-4 flex flex-col lg:flex-row gap-4 justify-between mt-6">
+              {event.judgeName && (
+                <div className="flex items-center gap-3">
+                  <div>
+                    <p className="text-xs font-['Inter'] tracking-wider text-rose-300/60 uppercase">Guest Judge</p>
+                    <p className="text-sm font-['Boldonse'] tracking-wide text-rose-100">{event.judgeName}</p>
+                  </div>
+                </div>
+              )}
+              {event.winnerName && (
+                <div className="lg:text-right">
+                  <p className="text-[10px] font-['Inter'] tracking-widest text-rose-300/60 uppercase mb-1">
+                    Winner <span className="opacity-50">|</span> {event.winningContingent}
+                  </p>
+                  <p className="text-sm font-['Boldonse'] tracking-wider text-amber-400 uppercase">{event.winnerName}</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </motion.div>
     );
@@ -1504,6 +1561,27 @@ const PremiumManuscriptCard = ({
               </span>
             ))}
           </div>
+
+          {(event.judgeName || event.winnerName) && (
+            <div className="border-t border-[#B45309]/40 pt-4 flex flex-col lg:flex-row gap-4 justify-between mt-6">
+              {event.judgeName && (
+                <div className="flex items-center gap-3">
+                  <div>
+                    <p className="text-xs font-['Inter'] tracking-wider text-[#F59E0B]/60 uppercase">Guest Judge</p>
+                    <p className="text-sm font-['Boldonse'] tracking-wide text-amber-200">{event.judgeName}</p>
+                  </div>
+                </div>
+              )}
+              {event.winnerName && (
+                <div className="lg:text-right">
+                  <p className="text-[10px] font-['Inter'] tracking-widest text-[#F59E0B]/60 uppercase mb-1">
+                    Winner <span className="opacity-50">|</span> {event.winningContingent}
+                  </p>
+                  <p className="text-sm font-['Boldonse'] tracking-wider text-[#F59E0B] uppercase">{event.winnerName}</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </motion.div>
     );
@@ -1562,6 +1640,27 @@ const PremiumManuscriptCard = ({
             ))}
           </div>
 
+          {(event.judgeName || event.winnerName) && (
+            <div className="border-t border-[#D7CCC8]/60 pt-4 flex flex-col lg:flex-row gap-4 justify-between mt-6">
+              {event.judgeName && (
+                <div className="flex items-center gap-3">
+                  <div>
+                    <p className="text-xs font-['Inter'] tracking-wider text-[#8D6E63]/80 uppercase">Guest Judge</p>
+                    <p className="text-sm font-['Boldonse'] tracking-wide text-[#332E24]">{event.judgeName}</p>
+                  </div>
+                </div>
+              )}
+              {event.winnerName && (
+                <div className="lg:text-right">
+                  <p className="text-[10px] font-['Inter'] tracking-widest text-[#8D6E63]/80 uppercase mb-1">
+                    Winner <span className="opacity-50">|</span> {event.winningContingent}
+                  </p>
+                  <p className="text-sm font-['Boldonse'] tracking-wider text-[#8D6E63] uppercase">{event.winnerName}</p>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="border-t border-[#DDD5C3]/60 pt-4 flex justify-between items-center mt-6">
             <span className="text-[10px] font-['Bona_Nova_SC'] italic text-[#8D6E63]">
               Ref. FA-{(index + 1).toString().padStart(2, '0')}
@@ -1598,10 +1697,6 @@ const PremiumManuscriptCard = ({
           }}
         />
 
-        <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10">
-          <div className="absolute top-0 left-0 w-[50%] h-[200%] bg-gradient-to-r from-transparent via-amber-400/10 to-transparent -translate-y-1/4 -translate-x-[150%] rotate-[35deg] group-hover:animate-[sheen_1.5s_ease-in-out_infinite]" />
-        </div>
-
         <div className="absolute inset-3 rounded-[24px] pointer-events-none border border-violet-500/10 group-hover:border-amber-400/20 group-hover:scale-[1.01] transition-all duration-500 z-10" />
 
         <span className="absolute bottom-6 right-8 text-9xl font-['Boldonse'] font-bold select-none opacity-[0.02] transition-all duration-700 group-hover:opacity-[0.06] group-hover:scale-105 text-amber-400">
@@ -1627,6 +1722,27 @@ const PremiumManuscriptCard = ({
               </span>
             ))}
           </div>
+
+          {(event.judgeName || event.winnerName) && (
+            <div className="border-t border-violet-500/30 pt-4 flex flex-col lg:flex-row gap-4 justify-between mt-6">
+              {event.judgeName && (
+                <div className="flex items-center gap-3">
+                  <div>
+                    <p className="text-xs font-['Inter'] tracking-wider text-violet-300/60 uppercase">Guest Judge</p>
+                    <p className="text-sm font-['Boldonse'] tracking-wide text-slate-100">{event.judgeName}</p>
+                  </div>
+                </div>
+              )}
+              {event.winnerName && (
+                <div className="lg:text-right">
+                  <p className="text-[10px] font-['Inter'] tracking-widest text-violet-300/60 uppercase mb-1">
+                    Winner <span className="opacity-50">|</span> {event.winningContingent}
+                  </p>
+                  <p className="text-sm font-['Boldonse'] tracking-wider text-amber-400 uppercase">{event.winnerName}</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </motion.div>
     );
@@ -1729,6 +1845,37 @@ const PremiumManuscriptCard = ({
             </span>
           ))}
         </div>
+
+        {(event.judgeName || event.winnerName) && (
+          <div className={`border-t pt-4 flex flex-col lg:flex-row gap-4 justify-between mt-6 ${
+            isInkActive ? 'border-blue-200' : 'border-[var(--color-border-main)]/30'
+          }`}>
+            {event.judgeName && (
+              <div className="flex items-center gap-3">
+                <div>
+                  <p className={`text-xs font-['Inter'] tracking-wider uppercase ${
+                    isInkActive ? 'text-slate-500' : 'text-[var(--color-text-main)]/50'
+                  }`}>Guest Judge</p>
+                  <p className={`text-sm tracking-wide ${
+                    isInkActive ? "font-['Kaushan_Script'] text-blue-900" : "font-['Boldonse'] text-[var(--color-text-main)]"
+                  }`}>{event.judgeName}</p>
+                </div>
+              </div>
+            )}
+            {event.winnerName && (
+              <div className="lg:text-right">
+                <p className={`text-[10px] font-['Inter'] tracking-widest uppercase mb-1 ${
+                  isInkActive ? 'text-slate-500' : 'text-[var(--color-text-main)]/50'
+                }`}>
+                  Winner <span className="opacity-50">|</span> {event.winningContingent}
+                </p>
+                <p className={`text-sm tracking-wider uppercase ${
+                  isInkActive ? "font-['Kaushan_Script'] text-blue-700" : "font-['Boldonse'] text-[var(--color-accent-primary)]"
+                }`}>{event.winnerName}</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </motion.div>
   );
@@ -1741,6 +1888,18 @@ export const DepartmentPage = ({ id, name, year, onBack }: DepartmentPageProps) 
   const [isPaintActive, setIsPaintActive] = useState(id === 'fa');
   const [isIpaActive, setIsIpaActive] = useState(id === 'ipa');
   const [isEtcwActive, setIsEtcwActive] = useState(id === 'etcw');
+  
+  const { poemUnlocked, unlockPoem, closePoem } = useGamification();
+  const [poemClicks, setPoemClicks] = useState(0);
+  
+  const handleStampClick = () => {
+    if (poemUnlocked) return;
+    const newCount = poemClicks + 1;
+    setPoemClicks(newCount);
+    if (newCount >= 5) {
+      unlockPoem();
+    }
+  };
 
   // Track active paint color for Fine Arts studio
   const [paintColor, setPaintColor] = useState(FA_PALETTE[0]);
@@ -1795,7 +1954,7 @@ export const DepartmentPage = ({ id, name, year, onBack }: DepartmentPageProps) 
   return (
     <motion.div
       layoutId={`dept-${id}`}
-      exit={{ opacity: 0, transition: { duration: 0.3 } }}
+      exit={{ opacity: 0, y: 50, scale: 0.95, transition: { duration: 0.4, ease: 'easeOut' } }}
       transition={{ type: 'spring', stiffness: 400, damping: 35 }}
       className={`fixed inset-0 z-[200] overflow-y-auto transition-colors duration-1000 select-none ${wrapperClass}`}
       data-lenis-prevent="true"
@@ -1871,8 +2030,95 @@ export const DepartmentPage = ({ id, name, year, onBack }: DepartmentPageProps) 
           />
           {/* Vertical red margin line */}
           <div className="absolute top-0 bottom-0 left-8 md:left-24 w-[2px] bg-red-400/40 pointer-events-none" />
+          
+          {/* Secret LA Stamp */}
+          <div 
+            onClick={handleStampClick}
+            className="absolute top-32 right-12 md:right-32 w-24 h-24 border-4 border-blue-900/20 rounded-full flex items-center justify-center rotate-[-15deg] opacity-60 hover:opacity-100 transition-opacity cursor-pointer z-50 mix-blend-multiply"
+          >
+            <div className="w-20 h-20 border-2 border-blue-900/30 rounded-full flex flex-col items-center justify-center font-['Courier_New'] font-bold text-blue-900/60 uppercase text-[10px] tracking-widest text-center">
+              <span>Ref. LA</span>
+              <span className="text-xs">Est. 1979</span>
+            </div>
+          </div>
+
+          {/* Poem Overlay */}
+          <AnimatePresence>
+            {poemUnlocked && (
+              <motion.div 
+                initial={{ opacity: 0, clipPath: 'circle(0% at 90% 20%)' }}
+                animate={{ opacity: 1, clipPath: 'circle(150% at 90% 20%)' }}
+                transition={{ duration: 1.5, ease: 'easeOut' }}
+                className="fixed inset-0 z-[300] bg-blue-950 flex items-center justify-center p-8 overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-blue-950 to-[#020617] pointer-events-none" />
+                
+                <button
+                  onClick={closePoem}
+                  onMouseEnter={playHover}
+                  className="absolute top-8 right-8 z-50 p-4 rounded-full bg-blue-900/20 border border-blue-400/20 text-blue-300 hover:bg-blue-800/40 hover:text-white hover:scale-110 transition-all duration-300"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1, duration: 1.5 }}
+                  className="max-w-2xl text-center relative z-10"
+                >
+                  <h2 className="text-blue-200 font-['Kaushan_Script'] text-5xl md:text-7xl mb-12 leading-relaxed">
+                    "In oceans of ink,<br/>the soul doth sink,<br/>A multiverse unfolds,<br/>in the stories we link."
+                  </h2>
+                  <p className="text-blue-400/60 font-serif tracking-[0.3em] uppercase text-sm">
+                    — The Scribe of Malhar
+                  </p>
+                </motion.div>
+                
+                {/* Floating Ink particles */}
+                {Array.from({ length: 30 }).map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute rounded-full bg-blue-500/20 mix-blend-screen blur-[2px]"
+                    style={{
+                      width: Math.random() * 8 + 2 + 'px',
+                      height: Math.random() * 8 + 2 + 'px',
+                      left: Math.random() * 100 + '%',
+                      top: Math.random() * 100 + '%',
+                    }}
+                    animate={{
+                      y: [0, -100, 0],
+                      x: [0, Math.random() * 40 - 20, 0],
+                      opacity: [0.1, 0.5, 0.1],
+                    }}
+                    transition={{
+                      duration: Math.random() * 5 + 5,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                  />
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </>
       )}
+
+      {/* Back Button */}
+      <div className="fixed top-8 left-8 z-50">
+        <button
+          onClick={onBack}
+          onMouseEnter={playHover}
+          className={`flex items-center gap-3 px-6 py-3 rounded-full border text-xs font-bold uppercase tracking-widest transition-all duration-500 shadow-2xl hover:scale-105 no-cursor-scale ${
+            (id === 'la' && isInkActive) || (id === 'fa' && isPaintActive)
+              ? 'bg-white border-gray-200 text-slate-800 hover:bg-gray-50'
+              : 'bg-[var(--color-bg-secondary)]/80 border-[var(--color-border-main)]/50 text-[var(--color-text-main)] hover:border-[var(--color-accent-primary)]/50'
+          }`}
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Campus</span>
+        </button>
+      </div>
 
       {/* Toggle Buttons */}
       <div className="fixed top-8 right-8 z-50 flex gap-4">
