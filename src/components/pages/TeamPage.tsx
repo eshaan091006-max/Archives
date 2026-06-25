@@ -23,6 +23,10 @@ const TeamTiltCard = ({
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['10deg', '-10deg']);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-10deg', '10deg']);
 
+  // Sheen translations (counter-directional to create glint refraction effect)
+  const sheenX = useTransform(mouseXSpring, [-0.5, 0.5], ['25%', '-25%']);
+  const sheenY = useTransform(mouseYSpring, [-0.5, 0.5], ['25%', '-25%']);
+
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
@@ -53,6 +57,7 @@ const TeamTiltCard = ({
       }}
       className={`relative group/tilt transition-all duration-300 rounded-[2rem] border overflow-hidden ${className}`}
     >
+      {/* Spotlight Border Glow */}
       <motion.div
         className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 group-hover/tilt:opacity-100 transition duration-300 z-0"
         style={{
@@ -65,6 +70,18 @@ const TeamTiltCard = ({
           `,
         }}
       />
+      
+      {/* Counter-Directional Glass Refraction Sheen */}
+      <motion.div
+        className="pointer-events-none absolute w-[200%] h-[200%] -left-1/2 -top-1/2 opacity-0 group-hover/tilt:opacity-40 transition duration-500 z-10"
+        style={{
+          background: 'linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.08) 47%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.08) 53%, transparent 60%)',
+          x: sheenX,
+          y: sheenY,
+          mixBlendMode: 'overlay',
+        }}
+      />
+
       <div style={{ transform: 'translateZ(10px)' }} className="relative z-10 w-full h-full flex flex-col items-center">
         {children}
       </div>

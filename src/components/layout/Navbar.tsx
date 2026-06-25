@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 import { YearKey, themeContent } from '../../lib/themeData';
@@ -15,10 +15,11 @@ interface NavbarProps {
 export const Navbar = ({ year, setYear }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
-  const { soundEnabled, toggleSound, playHover } = useSound();
+  const { soundEnabled, toggleSound, playHover, analyser } = useSound();
   const theme = themeContent[year];
   const lenis = useLenis();
   const { discoverFrog, foundFrogs } = useGamification();
+  const barRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,6 +28,33 @@ export const Navbar = ({ year, setYear }: NavbarProps) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!soundEnabled || !analyser) return;
+
+    let animId: number;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    const updateBars = () => {
+      analyser.getByteFrequencyData(dataArray);
+
+      // Select indices to represent sub-bands (bass, low-mids, mids, highs)
+      const targetIndices = [2, 5, 8, 12];
+
+      barRefs.current.forEach((bar, idx) => {
+        if (!bar) return;
+        const rawValue = dataArray[targetIndices[idx]] || 0;
+        const scaleFactor = Math.max(0.18, Math.min(1.0, rawValue / 200));
+        bar.style.transform = `scaleY(${scaleFactor})`;
+      });
+
+      animId = requestAnimationFrame(updateBars);
+    };
+
+    animId = requestAnimationFrame(updateBars);
+    return () => cancelAnimationFrame(animId);
+  }, [soundEnabled, analyser]);
 
   const navLinks = [
     { label: 'EVENTS', id: 'events' },
@@ -131,10 +159,10 @@ export const Navbar = ({ year, setYear }: NavbarProps) => {
           >
             {soundEnabled ? (
               <span className="flex items-end gap-[2.5px] h-[16px] w-[16px] justify-center px-[1px] overflow-hidden">
-                <span className="visualizer-bar w-[2px] h-full bg-current rounded-full" />
-                <span className="visualizer-bar w-[2px] h-full bg-current rounded-full" />
-                <span className="visualizer-bar w-[2px] h-full bg-current rounded-full" />
-                <span className="visualizer-bar w-[2px] h-full bg-current rounded-full" />
+                <span ref={el => { barRefs.current[0] = el; }} className="w-[2px] h-full bg-current rounded-full origin-bottom will-change-transform transition-transform duration-75" style={{ transform: 'scaleY(0.2)' }} />
+                <span ref={el => { barRefs.current[1] = el; }} className="w-[2px] h-full bg-current rounded-full origin-bottom will-change-transform transition-transform duration-75" style={{ transform: 'scaleY(0.2)' }} />
+                <span ref={el => { barRefs.current[2] = el; }} className="w-[2px] h-full bg-current rounded-full origin-bottom will-change-transform transition-transform duration-75" style={{ transform: 'scaleY(0.2)' }} />
+                <span ref={el => { barRefs.current[3] = el; }} className="w-[2px] h-full bg-current rounded-full origin-bottom will-change-transform transition-transform duration-75" style={{ transform: 'scaleY(0.2)' }} />
               </span>
             ) : (
               <VolumeX size={16} />

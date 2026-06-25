@@ -6,6 +6,7 @@ import { YearKey } from './lib/themeData';
 import { Preloader } from './components/layout/Preloader';
 import { NoiseOverlay } from './components/layout/NoiseOverlay';
 import { GamificationProvider, useGamification, GamificationNotification } from './context/GamificationContext';
+import { ThemeSweepTransition } from './components/layout/ThemeSweepTransition';
 
 const DepartmentPage = React.lazy(() => import('./components/pages/DepartmentPage').then(m => ({ default: m.DepartmentPage })));
 const DomainPage = React.lazy(() => import('./components/pages/DomainPage').then(m => ({ default: m.DomainPage })));
@@ -28,6 +29,7 @@ function App() {
     const saved = localStorage.getItem('magicpath-theme');
     return (saved as YearKey) || '2025';
   });
+  const [targetYear, setTargetYear] = useState<YearKey | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState<any>(null);
   const [currentDomain, setCurrentDomain] = useState<any>(null);
@@ -37,11 +39,23 @@ function App() {
     localStorage.setItem('magicpath-theme', year);
   }, [year]);
 
+  const handleYearChange = (newYear: YearKey) => {
+    if (newYear !== year && !targetYear) {
+      setTargetYear(newYear);
+    }
+  };
+
   return (
     <ReactLenis root>
       <GamificationProvider>
         <ThemeWrapper year={year}>
           <NoiseOverlay />
+          <ThemeSweepTransition
+            currentYear={year}
+            targetYear={targetYear}
+            onTransitionHalfway={() => setYear(targetYear!)}
+            onTransitionComplete={() => setTargetYear(null)}
+          />
         <AnimatePresence mode="wait">
           {loading && <Preloader key="preloader" onComplete={() => setLoading(false)} />}
         </AnimatePresence>
@@ -49,7 +63,7 @@ function App() {
         {!loading && (
           <HomePage
             year={year}
-            setYear={setYear}
+            setYear={handleYearChange}
             onNavigate={setCurrentPage}
             onNavigateDomain={setCurrentDomain}
           />
