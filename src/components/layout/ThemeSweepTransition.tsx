@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { YearKey } from '../../lib/themeData';
+import { useSound } from '../../hooks/useSound';
 
 interface ThemeSweepProps {
   currentYear: YearKey;
@@ -23,14 +24,16 @@ export const ThemeSweepTransition = ({
 }: ThemeSweepProps) => {
   const [phase, setPhase] = useState<'hidden' | 'visible' | 'exit'>('hidden');
   const [activeSweepGradient, setActiveSweepGradient] = useState<string>('');
+  const { playSweep } = useSound();
 
   useEffect(() => {
     if (targetYear && targetYear !== currentYear) {
       setPhase('visible');
       const grad = sweepGradients[targetYear] || 'linear-gradient(135deg, #000000 0%, #333333 100%)';
       setActiveSweepGradient(grad);
+      playSweep();
     }
-  }, [targetYear, currentYear]);
+  }, [targetYear, currentYear, playSweep]);
 
   if (phase === 'hidden' || !targetYear) return null;
 

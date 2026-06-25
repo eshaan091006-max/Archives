@@ -4,6 +4,8 @@ import { useState, useCallback, useEffect } from 'react';
 const HOVER_SOUND = 'https://actions.google.com/sounds/v1/ui/button_click.ogg';
 const TRANSITION_SOUND =
   'https://actions.google.com/sounds/v1/science_fiction/shield_force_field_hum.ogg';
+const BOOT_SOUND = 'https://actions.google.com/sounds/v1/instruments/electric_piano_chord.ogg';
+const SWEEP_SOUND = 'https://actions.google.com/sounds/v1/science_fiction/teleport.ogg';
 
 export interface Track {
   name: string;
@@ -142,6 +144,20 @@ export const useSound = () => {
     audio.play().catch(() => {});
   }, [soundEnabled]);
 
+  const playBoot = useCallback(() => {
+    if (!soundEnabled) return;
+    const audio = new Audio(BOOT_SOUND);
+    audio.volume = 0.25;
+    audio.play().catch(() => {});
+  }, [soundEnabled]);
+
+  const playSweep = useCallback(() => {
+    if (!soundEnabled) return;
+    const audio = new Audio(SWEEP_SOUND);
+    audio.volume = 0.15;
+    audio.play().catch(() => {});
+  }, [soundEnabled]);
+
   return {
     soundEnabled,
     toggleSound,
@@ -151,6 +167,8 @@ export const useSound = () => {
     changeTrack,
     playHover,
     playTransition,
+    playBoot,
+    playSweep,
     analyser: globalAnalyser,
   };
 };
