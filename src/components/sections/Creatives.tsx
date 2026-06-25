@@ -65,7 +65,7 @@ export const Creatives = ({ year }: { year: YearKey }) => {
                 <div className="bg-[var(--color-bg-main)]/50 border border-[var(--color-accent-primary)]/40 text-[var(--color-accent-primary)] text-xs font-['Inter'] font-bold tracking-[0.3em] px-6 py-2.5 rounded-full w-max uppercase backdrop-blur-md">
                   Theme Brief
                 </div>
-                <h3 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic text-[var(--color-text-main)]/95 leading-[1.3] flex flex-col">
+                <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-serif italic text-[var(--color-text-main)]/95 leading-[1.3] flex flex-col">
                   <span className="whitespace-nowrap">"{theme.briefLine1}</span>
                   <span className="whitespace-nowrap">{theme.briefLine2}"</span>
                 </h3>
@@ -81,8 +81,8 @@ export const Creatives = ({ year }: { year: YearKey }) => {
                 <div className="absolute inset-3 rounded-full bg-gradient-to-tr from-[var(--color-bg-secondary)]/90 to-[var(--color-bg-main)]/90 backdrop-blur-md border border-[var(--color-border-main)]/30 flex flex-col items-center justify-center" />
                 {/* Text content */}
                 <div className="relative z-10 text-center flex flex-col items-center justify-center select-none">
-                  <span className="block text-[6px] md:text-[8px] uppercase tracking-[0.25em] text-[var(--color-text-main)]/60 font-semibold mb-0.5">MALHAR</span>
-                  <span className="block text-lg md:text-xl font-['Britannic_Bold'] text-metallic-gradient">
+                  <span className="block text-[8px] md:text-[10px] uppercase tracking-[0.25em] text-[var(--color-text-main)]/60 font-semibold mb-0.5">MALHAR</span>
+                  <span className="block text-xl md:text-2xl font-['Britannic_Bold'] text-metallic-gradient">
                     {year === '2023' ? "'23" : year === '2024' ? "'24" : "'25"}
                   </span>
                 </div>
