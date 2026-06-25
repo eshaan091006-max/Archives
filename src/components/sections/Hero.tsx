@@ -61,51 +61,49 @@ export const Hero = ({ year }: HeroProps) => {
         <Scene3D accentColor={theme.accentColor} />
       </motion.div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={year}
-          style={{ y: textY, opacity }}
-          className="relative z-10 text-center px-6 flex flex-col items-center max-w-5xl mx-auto"
-        >
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ delay: 0.1, duration: 0.8 }}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[var(--color-border-main)]/30 bg-[var(--color-bg-secondary)]/50 backdrop-blur-sm"
-            >
-              <span className="text-[var(--color-text-main)] font-['Inter'] tracking-[0.3em] text-sm md:text-base uppercase">
-                {theme.subtitle}
-              </span>
-            </motion.div>
-            {!foundFrogs.includes('frog2') && (
-              <button
-                onClick={() => discoverFrog('frog2')}
-                className="text-xl transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0 inline-block"
-                title="You found a frog!"
-              >
-                🐸
-              </button>
-            )}
-          </div>
-
-          <div className="relative mb-8 w-full px-6">
-            <h1 className="relative z-10 text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-[90px] 2xl:text-[110px] font-['Britannic_Bold'] text-[var(--color-accent-primary)] tracking-wider lg:tracking-widest uppercase leading-none drop-shadow-[0_0_30px_rgba(var(--color-accent-primary),0.3)] whitespace-nowrap flex justify-center">
-              <TextReveal text={theme.title} delay={0.2} className="flex-nowrap whitespace-nowrap" />
-            </h1>
-          </div>
-          
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="text-lg md:text-2xl text-[var(--color-text-main)]/80 font-['Inter'] max-w-2xl font-light leading-relaxed mb-8"
+      <motion.div
+        key={year}
+        style={{ y: textY, opacity }}
+        className="relative z-10 text-center px-6 flex flex-col items-center max-w-5xl mx-auto"
+      >
+        <div className="flex items-center justify-center gap-4 mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ delay: 0.1, duration: 0.8 }}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[var(--color-border-main)]/30 bg-[var(--color-bg-secondary)]/50 backdrop-blur-sm"
           >
-            {theme.description}
-          </motion.p>
-        </motion.div>
-      </AnimatePresence>
+            <span className="text-[var(--color-text-main)] font-['Inter'] tracking-[0.3em] text-sm md:text-base uppercase">
+              {theme.subtitle}
+            </span>
+          </motion.div>
+          {!foundFrogs.includes('frog2') && (
+            <button
+              onClick={() => discoverFrog('frog2')}
+              className="text-xl transition-all duration-300 opacity-0 hover:opacity-100 hover:scale-125 filter grayscale hover:grayscale-0 inline-block"
+              title="You found a frog!"
+            >
+              🐸
+            </button>
+          )}
+        </div>
+
+        <div className="relative mb-8 w-full px-6">
+          <h1 className="relative z-10 text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-[90px] 2xl:text-[110px] font-['Britannic_Bold'] text-[var(--color-accent-primary)] tracking-wider lg:tracking-widest uppercase leading-none drop-shadow-[0_0_30px_rgba(var(--color-accent-primary),0.3)] whitespace-nowrap flex justify-center">
+            <TextReveal text={theme.title} delay={0.2} className="flex-nowrap whitespace-nowrap" />
+          </h1>
+        </div>
+        
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="text-lg md:text-2xl text-[var(--color-text-main)]/80 font-['Inter'] max-w-2xl font-light leading-relaxed mb-8"
+        >
+          {theme.description}
+        </motion.p>
+      </motion.div>
     </section>
   );
 };
