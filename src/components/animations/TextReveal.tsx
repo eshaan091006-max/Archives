@@ -31,16 +31,18 @@ export const TextReveal = ({ text, className = '', delay = 0 }: TextRevealProps)
     },
   };
 
+  const hasWrapClass = className.includes('flex-nowrap') || className.includes('whitespace-nowrap');
+
   return (
     <motion.span
-      className={`inline-flex flex-wrap ${className}`}
+      className={`inline-flex ${hasWrapClass ? '' : 'flex-wrap'} ${className}`}
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
     >
       {words.map((word, index) => (
-        <span key={index} className="overflow-hidden inline-flex pb-2 -mb-2 mr-[0.25em]">
+        <span key={index} className="overflow-hidden inline-flex pb-2 -mb-2 mr-[0.25em] shrink-0">
           <motion.span variants={wordVariants} className="inline-block">
             {word}
           </motion.span>

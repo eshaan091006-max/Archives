@@ -58,6 +58,7 @@ export const RippleImage = ({ src, alt, className = '' }: RippleImageProps) => {
         alt={alt}
         className="w-full h-full object-cover"
         style={{ filter: `url(#ripple-${id})` }}
+        loading="lazy"
       />
     </div>
   );

@@ -118,6 +118,7 @@ export const PhotoGallery = () => {
                             src={img.src}
                             alt={`Gallery ${idx}`}
                             className="w-full h-full object-cover opacity-90 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none"
+                            loading="lazy"
                           />
                           {/* Polaroid tape */}
                           <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/60 backdrop-blur-sm shadow-sm rotate-[-3deg] border border-white/30 pointer-events-none" />
@@ -167,6 +168,7 @@ export const PhotoGallery = () => {
                 src={selectedImg.src}
                 alt="Expanded view"
                 className="w-full h-full max-h-[70vh] object-contain shadow-inner pointer-events-none"
+                loading="lazy"
               />
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-white/60 backdrop-blur-md shadow-sm rotate-[-2deg] border border-white/30 pointer-events-none" />
               <div className="absolute bottom-6 md:bottom-8 left-0 w-full text-center pointer-events-none">

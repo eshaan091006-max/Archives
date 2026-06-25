@@ -34,6 +34,7 @@ export const BackgroundEffects = () => {
           repeat: Infinity,
           ease: 'linear',
         }}
+        style={{ willChange: 'transform' }}
         className="absolute top-[10%] left-[20%] w-[500px] h-[500px] rounded-full bg-[var(--color-accent-primary)] opacity-10 blur-[100px]"
       />
       <motion.div
@@ -47,6 +48,7 @@ export const BackgroundEffects = () => {
           repeat: Infinity,
           ease: 'linear',
         }}
+        style={{ willChange: 'transform' }}
         className="absolute bottom-[20%] right-[10%] w-[600px] h-[600px] rounded-full bg-[var(--color-accent-secondary)] opacity-10 blur-[120px]"
       />
     </div>

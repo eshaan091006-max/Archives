@@ -180,6 +180,7 @@ export const DomainPage = ({ id, title, image, description, departments, onBack,
                   src={image} 
                   alt={title} 
                   className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-[2s] ease-out" 
+                  loading="lazy"
                 />
               </motion.div>
             )}

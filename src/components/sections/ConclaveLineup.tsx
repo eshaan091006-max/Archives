@@ -56,11 +56,11 @@ export const ConclaveLineup = () => {
                   isHovered ? 'w-[400px] md:w-[650px]' : 'w-[280px] md:w-[350px]'
                 }`}
               >
-                {/* Background Image */}
                 <img 
                   src={person.image} 
                   alt={person.name} 
                   className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ${isHovered ? 'scale-110' : 'scale-100'}`}
+                  loading="lazy"
                 />
                 
                 {/* Glowing Overlay that activates on hover */}

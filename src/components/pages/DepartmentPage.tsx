@@ -2104,21 +2104,7 @@ export const DepartmentPage = ({ id, name, year, onBack }: DepartmentPageProps) 
         </>
       )}
 
-      {/* Back Button */}
-      <div className="fixed top-8 left-8 z-50">
-        <button
-          onClick={onBack}
-          onMouseEnter={playHover}
-          className={`flex items-center gap-3 px-6 py-3 rounded-full border text-xs font-bold uppercase tracking-widest transition-all duration-500 shadow-2xl hover:scale-105 no-cursor-scale ${
-            (id === 'la' && isInkActive) || (id === 'fa' && isPaintActive)
-              ? 'bg-white border-gray-200 text-slate-800 hover:bg-gray-50'
-              : 'bg-[var(--color-bg-secondary)]/80 border-[var(--color-border-main)]/50 text-[var(--color-text-main)] hover:border-[var(--color-accent-primary)]/50'
-          }`}
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Campus</span>
-        </button>
-      </div>
+
 
       {/* Toggle Buttons */}
       <div className="fixed top-8 right-8 z-50 flex gap-4">

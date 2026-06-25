@@ -30,6 +30,7 @@ export const InteractiveImage = ({ src, alt, className = '' }: InteractiveImageP
         src={src}
         alt={alt}
         className="absolute inset-0 w-full h-full object-cover grayscale opacity-30 transition-opacity duration-500"
+        loading="lazy"
       />
 
       {/* Full Color Spotlight Image */}
@@ -56,6 +57,7 @@ export const InteractiveImage = ({ src, alt, className = '' }: InteractiveImageP
           src={src}
           alt={alt}
           className="w-full h-full object-cover scale-105 transition-transform duration-[2s] ease-out group-hover:scale-110"
+          loading="lazy"
         />
       </motion.div>
     </div>

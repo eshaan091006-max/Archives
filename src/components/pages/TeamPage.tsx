@@ -90,6 +90,7 @@ export const TeamPage = ({ department, year, onBack }: TeamPageProps) => {
               src={teamData.photo} 
               alt={`${teamData.department} Team`} 
               className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-[2s] ease-out" 
+              loading="lazy"
             />
           </motion.div>
         </div>

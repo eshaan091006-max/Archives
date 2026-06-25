@@ -169,8 +169,8 @@ const QuartetCard = ({ member, idx, scrollYProgress, isMobile, year }: { member:
             src={`/assets/cards/${year}-back.svg`} 
             alt={`Malhar ${year} Card Back`}
             className="w-full h-full object-cover scale-[1.06]"
+            loading="lazy"
           />
-
         </div>
 
         {/* .cardFace .cardFront (Info side natively at 180deg) */}

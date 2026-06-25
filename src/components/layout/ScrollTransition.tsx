@@ -19,9 +19,10 @@ export const ScrollTransition = ({
     offset: type === 'mask' ? ['start end', 'start 40%'] : ['start end', 'end start'],
   });
 
-  // Mask type: clips from top down to reveal
-  const maskClip = useTransform(scrollYProgress, [0, 1], ['inset(100% 0 0 0)', 'inset(0% 0 0 0)']);
-  const maskScale = useTransform(scrollYProgress, [0, 1], [0.95, 1]);
+  // GPU-accelerated fade and slide transition (no layout repaints)
+  const maskOpacity = useTransform(scrollYProgress, [0, 0.8], [0, 1]);
+  const maskY = useTransform(scrollYProgress, [0, 0.8], ['40px', '0px']);
+  const maskScale = useTransform(scrollYProgress, [0, 0.8], [0.96, 1]);
 
   // Parallax type: fades out and moves down slowly as it leaves the screen
   const parallaxY = useTransform(scrollYProgress, [0.5, 1], ['0%', '15%']);
@@ -30,7 +31,7 @@ export const ScrollTransition = ({
   if (type === 'parallax') {
     return (
       <div ref={ref} className={`relative w-full ${className}`}>
-        <motion.div style={{ y: parallaxY, opacity: parallaxOpacity }} className="w-full">
+        <motion.div style={{ y: parallaxY, opacity: parallaxOpacity, willChange: 'transform' }} className="w-full">
           {children}
         </motion.div>
       </div>
@@ -39,7 +40,7 @@ export const ScrollTransition = ({
 
   return (
     <div ref={ref} className={`relative w-full ${className}`}>
-      <motion.div style={{ clipPath: maskClip, scale: maskScale }} className="w-full">
+      <motion.div style={{ opacity: maskOpacity, y: maskY, scale: maskScale, willChange: 'transform, opacity' }} className="w-full">
         {children}
       </motion.div>
     </div>

@@ -90,9 +90,9 @@ export const Hero = ({ year }: HeroProps) => {
             )}
           </div>
 
-          <div className="relative mb-8">
-            <h1 className="relative z-10 text-6xl md:text-8xl lg:text-[120px] font-['Britannic_Bold'] text-[var(--color-accent-primary)] tracking-widest uppercase leading-none drop-shadow-[0_0_30px_rgba(var(--color-accent-primary),0.3)]">
-              <TextReveal text={theme.title} delay={0.2} />
+          <div className="relative mb-8 w-full px-6">
+            <h1 className="relative z-10 text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-[90px] 2xl:text-[110px] font-['Britannic_Bold'] text-[var(--color-accent-primary)] tracking-wider lg:tracking-widest uppercase leading-none drop-shadow-[0_0_30px_rgba(var(--color-accent-primary),0.3)] whitespace-nowrap flex justify-center">
+              <TextReveal text={theme.title} delay={0.2} className="flex-nowrap whitespace-nowrap" />
             </h1>
           </div>
           
@@ -104,23 +104,6 @@ export const Hero = ({ year }: HeroProps) => {
           >
             {theme.description}
           </motion.p>
-
-          <MagneticWrapper>
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              className="flex flex-col items-center gap-2 cursor-pointer p-4"
-              onClick={() => {
-                const el = document.getElementById('stats');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >
-              <span className="text-[var(--color-text-highlight)] text-xs font-['Inter'] tracking-[0.3em] uppercase font-bold">
-                Scroll
-              </span>
-              <ChevronDown className="text-[var(--color-accent-primary)] w-6 h-6" />
-            </motion.div>
-          </MagneticWrapper>
         </motion.div>
       </AnimatePresence>
     </section>

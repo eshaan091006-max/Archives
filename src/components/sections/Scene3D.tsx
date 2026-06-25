@@ -26,6 +26,7 @@ export const Scene3D = ({ accentColor }: { accentColor: string }) => {
         className={`absolute -top-[50%] -left-[50%] w-[200%] h-[200%] rounded-[100%] ${isLowEnd ? 'opacity-30' : 'blur-[120px] opacity-40'} md:opacity-50`}
         style={{
           background: `radial-gradient(circle at center, ${accentColor}, transparent 60%)`,
+          willChange: 'transform',
         }}
       />
 
@@ -45,6 +46,7 @@ export const Scene3D = ({ accentColor }: { accentColor: string }) => {
         className={`absolute -bottom-[50%] -right-[50%] w-[200%] h-[200%] rounded-[100%] ${isLowEnd ? 'opacity-30' : 'blur-[140px] opacity-40'} md:opacity-50`}
         style={{
           background: `radial-gradient(circle at center, var(--color-bg-tertiary), transparent 60%)`,
+          willChange: 'transform',
         }}
       />
 
@@ -63,6 +65,7 @@ export const Scene3D = ({ accentColor }: { accentColor: string }) => {
         className={`absolute top-[10%] left-[10%] w-[150%] h-[150%] rounded-[100%] ${isLowEnd ? 'opacity-20' : 'blur-[100px] opacity-30'} md:opacity-40`}
         style={{
           background: `radial-gradient(circle at center, var(--color-accent-secondary), transparent 70%)`,
+          willChange: 'transform',
         }}
       />
 

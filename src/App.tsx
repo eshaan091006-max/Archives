@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { ReactLenis } from 'lenis/react';
 import { HomePage } from './components/pages/HomePage';
-import { DepartmentPage } from './components/pages/DepartmentPage';
-import { DomainPage } from './components/pages/DomainPage';
-import { TeamPage } from './components/pages/TeamPage';
 import { YearKey } from './lib/themeData';
 import { Preloader } from './components/layout/Preloader';
 import { NoiseOverlay } from './components/layout/NoiseOverlay';
 import { GamificationProvider, useGamification, GamificationNotification } from './context/GamificationContext';
+
+const DepartmentPage = React.lazy(() => import('./components/pages/DepartmentPage').then(m => ({ default: m.DepartmentPage })));
+const DomainPage = React.lazy(() => import('./components/pages/DomainPage').then(m => ({ default: m.DomainPage })));
+const TeamPage = React.lazy(() => import('./components/pages/TeamPage').then(m => ({ default: m.TeamPage })));
 
 const ThemeWrapper = ({ year, children }: { year: YearKey, children: React.ReactNode }) => {
   const { foundFrogs } = useGamification();
@@ -55,36 +56,38 @@ function App() {
         )}
 
         <AnimatePresence>
-          {currentPage && (
-            <DepartmentPage
-              key="dept"
-              id={currentPage.id}
-              name={currentPage.name}
-              year={year}
-              onBack={() => setCurrentPage(null)}
-            />
-          )}
-          {currentDomain && !currentTeam && (
-            <DomainPage
-              key="domain"
-              id={currentDomain.id}
-              title={currentDomain.title}
-              image={currentDomain.image}
-              description={currentDomain.description}
-              departments={currentDomain.departments}
-              onBack={() => setCurrentDomain(null)}
-              onNavigateTeam={setCurrentTeam}
-            />
-          )}
-          {currentTeam && (
-            <TeamPage
-              key="team"
-              department={currentTeam}
-              year={year}
-              onBack={() => setCurrentTeam(null)}
-            />
-          )}
-          </AnimatePresence>
+          <React.Suspense fallback={null}>
+            {currentPage && (
+              <DepartmentPage
+                key="dept"
+                id={currentPage.id}
+                name={currentPage.name}
+                year={year}
+                onBack={() => setCurrentPage(null)}
+              />
+            )}
+            {currentDomain && !currentTeam && (
+              <DomainPage
+                key="domain"
+                id={currentDomain.id}
+                title={currentDomain.title}
+                image={currentDomain.image}
+                description={currentDomain.description}
+                departments={currentDomain.departments}
+                onBack={() => setCurrentDomain(null)}
+                onNavigateTeam={setCurrentTeam}
+              />
+            )}
+            {currentTeam && (
+              <TeamPage
+                key="team"
+                department={currentTeam}
+                year={year}
+                onBack={() => setCurrentTeam(null)}
+              />
+            )}
+          </React.Suspense>
+        </AnimatePresence>
         </ThemeWrapper>
       </GamificationProvider>
     </ReactLenis>
