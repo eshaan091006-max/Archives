@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 import { YearKey, themeContent } from '../../lib/themeData';
 import { MagneticWrapper } from '../animations/MagneticWrapper';
-import { useSound } from '../../hooks/useSound';
+import { useSound, TRACKS } from '../../hooks/useSound';
 import { useLenis } from 'lenis/react';
 import { useGamification } from '../../context/GamificationContext';
 
@@ -15,7 +15,8 @@ interface NavbarProps {
 export const Navbar = ({ year, setYear }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
-  const { soundEnabled, toggleSound, playHover, analyser } = useSound();
+  const { soundEnabled, toggleSound, playHover, analyser, volume, changeVolume, trackIndex, changeTrack } = useSound();
+  const [showAudioControls, setShowAudioControls] = useState(false);
   const theme = themeContent[year];
   const lenis = useLenis();
   const { discoverFrog, foundFrogs } = useGamification();
@@ -152,22 +153,87 @@ export const Navbar = ({ year, setYear }: NavbarProps) => {
 
           <div className="w-[1px] h-6 bg-[var(--color-border-main)]/30 mx-4" />
 
-          <button
-            onClick={toggleSound}
-            onMouseEnter={playHover}
-            className="p-2 rounded-full border border-[var(--color-border-main)] text-[var(--color-text-highlight)] hover:text-[var(--color-accent-primary)] hover:border-[var(--color-accent-primary)] transition-colors"
+          <div 
+            className="relative flex items-center"
+            onMouseEnter={() => setShowAudioControls(true)}
+            onMouseLeave={() => setShowAudioControls(false)}
           >
-            {soundEnabled ? (
-              <span className="flex items-end gap-[2.5px] h-[16px] w-[16px] justify-center px-[1px] overflow-hidden">
-                <span ref={el => { barRefs.current[0] = el; }} className="w-[2px] h-full bg-current rounded-full origin-bottom will-change-transform transition-transform duration-75" style={{ transform: 'scaleY(0.2)' }} />
-                <span ref={el => { barRefs.current[1] = el; }} className="w-[2px] h-full bg-current rounded-full origin-bottom will-change-transform transition-transform duration-75" style={{ transform: 'scaleY(0.2)' }} />
-                <span ref={el => { barRefs.current[2] = el; }} className="w-[2px] h-full bg-current rounded-full origin-bottom will-change-transform transition-transform duration-75" style={{ transform: 'scaleY(0.2)' }} />
-                <span ref={el => { barRefs.current[3] = el; }} className="w-[2px] h-full bg-current rounded-full origin-bottom will-change-transform transition-transform duration-75" style={{ transform: 'scaleY(0.2)' }} />
-              </span>
-            ) : (
-              <VolumeX size={16} />
-            )}
-          </button>
+            <AnimatePresence>
+              {showAudioControls && soundEnabled && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 20, scale: 0.95 }}
+                  className="absolute right-full mr-4 bg-[var(--color-bg-secondary)]/90 backdrop-blur-xl border border-[var(--color-border-main)]/40 px-5 py-4 rounded-2xl flex flex-col gap-4 shadow-xl min-w-[240px] z-50 text-[var(--color-text-main)]"
+                >
+                  {/* Track Controller */}
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[10px] tracking-[0.2em] font-semibold text-[var(--color-accent-primary)]/80 uppercase">
+                      Current Track
+                    </span>
+                    <div className="flex items-center justify-between gap-3 bg-[var(--color-bg-main)]/50 border border-[var(--color-border-main)]/20 px-3 py-2 rounded-xl">
+                      <button 
+                        onClick={() => changeTrack((trackIndex - 1 + TRACKS.length) % TRACKS.length)}
+                        className="text-[var(--color-text-main)]/60 hover:text-[var(--color-accent-primary)] text-sm px-1.5 py-0.5 rounded border border-[var(--color-border-main)]/10 hover:border-[var(--color-accent-primary)]/30 transition-all font-mono"
+                      >
+                        &lt;
+                      </button>
+                      <div className="text-center overflow-hidden flex flex-col flex-1">
+                        <span className="text-xs font-bold truncate max-w-[130px]">
+                          {TRACKS[trackIndex].name}
+                        </span>
+                        <span className="text-[9px] text-[var(--color-text-main)]/50 tracking-wider">
+                          Theme {TRACKS[trackIndex].theme}
+                        </span>
+                      </div>
+                      <button 
+                        onClick={() => changeTrack((trackIndex + 1) % TRACKS.length)}
+                        className="text-[var(--color-text-main)]/60 hover:text-[var(--color-accent-primary)] text-sm px-1.5 py-0.5 rounded border border-[var(--color-border-main)]/10 hover:border-[var(--color-accent-primary)]/30 transition-all font-mono"
+                      >
+                        &gt;
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Volume Slider */}
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex justify-between items-center text-[10px] tracking-[0.2em] font-semibold text-[var(--color-accent-primary)]/80 uppercase">
+                      <span>Volume</span>
+                      <span className="font-mono">{Math.round(volume * 100)}%</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <input 
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={volume}
+                        onChange={(e) => changeVolume(parseFloat(e.target.value))}
+                        className="w-full accent-[var(--color-accent-primary)] bg-[var(--color-border-main)]/20 h-1 rounded-lg appearance-none cursor-pointer outline-none"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <button
+              onClick={toggleSound}
+              onMouseEnter={playHover}
+              className="p-2 rounded-full border border-[var(--color-border-main)] text-[var(--color-text-highlight)] hover:text-[var(--color-accent-primary)] hover:border-[var(--color-accent-primary)] transition-colors relative z-10"
+            >
+              {soundEnabled ? (
+                <span className="flex items-end gap-[2.5px] h-[16px] w-[16px] justify-center px-[1px] overflow-hidden">
+                  <span ref={el => { barRefs.current[0] = el; }} className="w-[2px] h-full bg-current rounded-full origin-bottom will-change-transform transition-transform duration-75" style={{ transform: 'scaleY(0.2)' }} />
+                  <span ref={el => { barRefs.current[1] = el; }} className="w-[2px] h-full bg-current rounded-full origin-bottom will-change-transform transition-transform duration-75" style={{ transform: 'scaleY(0.2)' }} />
+                  <span ref={el => { barRefs.current[2] = el; }} className="w-[2px] h-full bg-current rounded-full origin-bottom will-change-transform transition-transform duration-75" style={{ transform: 'scaleY(0.2)' }} />
+                  <span ref={el => { barRefs.current[3] = el; }} className="w-[2px] h-full bg-current rounded-full origin-bottom will-change-transform transition-transform duration-75" style={{ transform: 'scaleY(0.2)' }} />
+                </span>
+              ) : (
+                <VolumeX size={16} />
+              )}
+            </button>
+          </div>
 
         </div>
       </div>

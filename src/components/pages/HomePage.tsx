@@ -2,6 +2,7 @@ import React from 'react';
 import { Navbar } from '../layout/Navbar';
 import { BackgroundEffects } from '../layout/BackgroundEffects';
 import { CustomCursor } from '../layout/CustomCursor';
+import { ScrollToTop } from '../layout/ScrollToTop';
 import { Hero } from '../sections/Hero';
 import { Stats } from '../sections/Stats';
 import { Quartet } from '../sections/Quartet';
@@ -27,6 +28,7 @@ export const HomePage = ({ year, setYear, onNavigate, onNavigateDomain }: HomePa
     <main className="min-h-screen md:cursor-none bg-[var(--color-bg-main)] selection:bg-[var(--color-accent-primary)] selection:text-[var(--color-bg-main)] transition-colors duration-500 overflow-x-hidden">
       <CustomCursor />
       <BackgroundEffects />
+      <ScrollToTop />
       <Navbar year={year} setYear={setYear} />
 
       <ScrollTransition type="parallax" className="z-0">
