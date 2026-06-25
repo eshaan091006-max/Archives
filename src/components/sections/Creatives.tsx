@@ -60,14 +60,33 @@ export const Creatives = ({ year }: { year: YearKey }) => {
             viewport={{ once: true }}
             className="flex-1 relative rounded-3xl bg-gradient-to-br from-[var(--color-bg-secondary)]/80 to-[var(--color-bg-main)]/90 backdrop-blur-xl border border-[var(--color-border-main)]/40 p-8 md:p-14 shadow-lg flex flex-col justify-center"
           >
-            <div className="relative z-10 flex flex-col gap-8">
-              <div className="bg-[var(--color-bg-main)]/50 border border-[var(--color-accent-primary)]/40 text-[var(--color-accent-primary)] text-xs font-['Inter'] font-bold tracking-[0.3em] px-6 py-2.5 rounded-full w-max uppercase backdrop-blur-md">
-                Theme Brief
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+              <div className="flex flex-col gap-8">
+                <div className="bg-[var(--color-bg-main)]/50 border border-[var(--color-accent-primary)]/40 text-[var(--color-accent-primary)] text-xs font-['Inter'] font-bold tracking-[0.3em] px-6 py-2.5 rounded-full w-max uppercase backdrop-blur-md">
+                  Theme Brief
+                </div>
+                <h3 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic text-[var(--color-text-main)]/95 leading-[1.3] flex flex-col">
+                  <span className="whitespace-nowrap">"{theme.briefLine1}</span>
+                  <span className="whitespace-nowrap">{theme.briefLine2}"</span>
+                </h3>
               </div>
-              <h3 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic text-[var(--color-text-main)]/95 leading-[1.3] flex flex-col">
-                <span className="whitespace-nowrap">"{theme.briefLine1}</span>
-                <span className="whitespace-nowrap">{theme.briefLine2}"</span>
-              </h3>
+
+              {/* Theme Logo Circle */}
+              <div className="relative shrink-0 w-24 h-24 md:w-32 md:h-32 rounded-full border border-[var(--color-accent-primary)]/30 bg-[var(--color-bg-main)]/45 flex items-center justify-center shadow-lg group overflow-hidden">
+                {/* Glow behind */}
+                <div className="absolute inset-0 bg-[var(--color-accent-primary)]/10 rounded-full blur-md opacity-70 group-hover:scale-115 transition-transform duration-500" />
+                {/* Rotating dashed line */}
+                <div className="absolute inset-1 rounded-full border border-dashed border-[var(--color-accent-primary)]/60 animate-[spin_25s_linear_infinite]" />
+                {/* Inner glass layer */}
+                <div className="absolute inset-3 rounded-full bg-gradient-to-tr from-[var(--color-bg-secondary)]/90 to-[var(--color-bg-main)]/90 backdrop-blur-md border border-[var(--color-border-main)]/30 flex flex-col items-center justify-center" />
+                {/* Text content */}
+                <div className="relative z-10 text-center flex flex-col items-center justify-center select-none">
+                  <span className="block text-[8px] md:text-[10px] uppercase tracking-[0.25em] text-[var(--color-text-main)]/60 font-semibold mb-0.5">MALHAR</span>
+                  <span className="block text-xl md:text-2xl font-['Britannic_Bold'] text-metallic-gradient">
+                    {year === '2023' ? "'23" : year === '2024' ? "'24" : "'25"}
+                  </span>
+                </div>
+              </div>
             </div>
           </motion.div>
 
