@@ -100,7 +100,7 @@ export const Events = ({ onNavigate }: { onNavigate: (dept: any) => void }) => {
           className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8"
         >
           <div className="text-center md:text-left">
-            <h2 className="text-[var(--color-accent-primary)] text-5xl md:text-8xl font-['Britannic_Bold'] tracking-[0.2em] uppercase mb-6 drop-shadow-sm">
+            <h2 className="text-5xl md:text-8xl font-['Britannic_Bold'] tracking-[0.2em] uppercase mb-6 text-metallic-gradient">
               Events
             </h2>
             <AnimatedDivider className="text-[var(--color-border-main)]/30" />

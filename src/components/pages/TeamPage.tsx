@@ -1,6 +1,76 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from 'framer-motion';
 import { ArrowLeft, Users, Star, Award } from 'lucide-react';
+
+const TeamTiltCard = ({
+  children,
+  className = '',
+  glowOpacity = '0.08',
+}: {
+  children: React.ReactNode;
+  className?: string;
+  glowOpacity?: string;
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const spotlightX = useMotionValue(0);
+  const spotlightY = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15, mass: 0.1 });
+  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 15, mass: 0.1 });
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['10deg', '-10deg']);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-10deg', '10deg']);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    x.set(mouseX / width - 0.5);
+    y.set(mouseY / height - 0.5);
+    spotlightX.set(mouseX);
+    spotlightY.set(mouseY);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: 'preserve-3d',
+      }}
+      className={`relative group/tilt transition-all duration-300 rounded-[2rem] border overflow-hidden ${className}`}
+    >
+      <motion.div
+        className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 group-hover/tilt:opacity-100 transition duration-300 z-0"
+        style={{
+          background: useMotionTemplate`
+            radial-gradient(
+              300px circle at ${spotlightX}px ${spotlightY}px,
+              rgba(255, 255, 255, ${glowOpacity}),
+              transparent 50%
+            )
+          `,
+        }}
+      />
+      <div style={{ transform: 'translateZ(10px)' }} className="relative z-10 w-full h-full flex flex-col items-center">
+        {children}
+      </div>
+    </motion.div>
+  );
+};
 import { useSound } from '../../hooks/useSound';
 import { getTeamData } from '../../lib/teamData';
 
@@ -124,14 +194,17 @@ export const TeamPage = ({ department, year, onBack }: TeamPageProps) => {
           <div className="max-w-5xl mx-auto pb-12 mt-8 px-6">
             {/* OC Section */}
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center">
-              <div className="relative group cursor-default">
-                <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-secondary)] rounded-[2rem] blur-xl opacity-30 group-hover:opacity-60 transition-opacity duration-700" />
-                <div className="relative w-full min-w-[320px] md:min-w-[450px] p-12 rounded-[2rem] bg-[var(--color-bg-secondary)]/80 backdrop-blur-2xl border border-[var(--color-accent-primary)]/40 text-center shadow-2xl flex flex-col items-center gap-5 hover:-translate-y-2 transition-transform duration-500">
+              <div className="relative cursor-default">
+                <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-secondary)] rounded-[2rem] blur-xl opacity-20 group-hover/tilt:opacity-40 transition-opacity duration-700" />
+                <TeamTiltCard
+                  glowOpacity="0.1"
+                  className="w-full min-w-[320px] md:min-w-[450px] p-12 bg-[var(--color-bg-secondary)]/80 backdrop-blur-2xl border-[var(--color-accent-primary)]/40 text-center shadow-2xl flex flex-col items-center gap-5 hover:border-[var(--color-accent-primary)]/70 transition-colors"
+                >
                   <span className="text-xs font-['Inter'] uppercase tracking-[0.3em] text-[var(--color-accent-primary)] font-bold flex items-center gap-2">
                     Organizer in Charge (OC)
                   </span>
                   <p className="text-5xl font-['Boldonse'] text-[var(--color-text-main)]">{teamData.oc}</p>
-                </div>
+                </TeamTiltCard>
               </div>
             </motion.div>
 
@@ -144,11 +217,14 @@ export const TeamPage = ({ department, year, onBack }: TeamPageProps) => {
               </div>
               <div className="flex flex-wrap justify-center gap-8 w-full">
                 {teamData.ogs.map((og, idx) => (
-                  <div key={idx} className="group relative min-w-[260px]">
-                    <div className="absolute inset-0 bg-[var(--color-accent-secondary)]/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="relative px-8 py-10 rounded-2xl bg-[var(--color-bg-secondary)]/60 backdrop-blur-md border border-[var(--color-border-main)]/30 group-hover:border-[var(--color-accent-secondary)]/50 text-center transition-all duration-500 flex flex-col items-center gap-4 hover:-translate-y-3 hover:shadow-2xl">
+                  <div key={idx} className="relative min-w-[260px]">
+                    <div className="absolute inset-0 bg-[var(--color-accent-secondary)]/15 rounded-[2rem] blur-lg opacity-0 hover:opacity-100 transition-opacity duration-500" />
+                    <TeamTiltCard
+                      glowOpacity="0.08"
+                      className="px-8 py-10 bg-[var(--color-bg-secondary)]/60 backdrop-blur-md border-[var(--color-border-main)]/30 hover:border-[var(--color-accent-secondary)]/50 text-center flex flex-col items-center gap-4 hover:shadow-2xl transition-colors"
+                    >
                       <p className="text-xl font-['Inter'] text-[var(--color-text-main)]/90 font-medium tracking-wide">{og}</p>
-                    </div>
+                    </TeamTiltCard>
                   </div>
                 ))}
               </div>

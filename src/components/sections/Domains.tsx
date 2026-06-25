@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from 'framer-motion';
 import { Network, Briefcase, Ticket } from 'lucide-react';
 import { AnimatedDivider } from '../animations/AnimatedDivider';
 import { useSound } from '../../hooks/useSound';
@@ -10,7 +10,7 @@ const domains = [
     id: 'networking',
     title: 'Networking',
     icon: Network,
-    image: 'https://images.unsplash.com/photo-1511649475669-e288648b2339?auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1511649475669-e288648b2339?auto=format&fit=crop&w=800&q=80',
     description: 'Building connections and fostering relationships across the festival ecosystem.',
     departments: [
       'Public Relations',
@@ -25,7 +25,7 @@ const domains = [
     id: 'management',
     title: 'Management',
     icon: Briefcase,
-    image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80',
     description: 'The backbone of operations, ensuring seamless execution of every detail.',
     departments: [
       'Logistics',
@@ -41,7 +41,7 @@ const domains = [
     id: 'events',
     title: 'Events',
     icon: Ticket,
-    image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80',
     description:
       'Curating unforgettable experiences through spectacular performances and competitions.',
     departments: [
@@ -66,6 +66,8 @@ const TiltCard = ({
 }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  const spotlightX = useMotionValue(0);
+  const spotlightY = useMotionValue(0);
   const { playHover } = useSound();
 
   const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15, mass: 0.1 });
@@ -84,6 +86,9 @@ const TiltCard = ({
     const yPct = mouseY / height - 0.5;
     x.set(xPct);
     y.set(yPct);
+    
+    spotlightX.set(mouseX);
+    spotlightY.set(mouseY);
   };
 
   const handleMouseLeave = () => {
@@ -111,8 +116,20 @@ const TiltCard = ({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={playHover}
-      className="relative flex flex-col p-8 bg-[var(--color-bg-secondary)]/80 backdrop-blur-md border border-[var(--color-border-main)] rounded-3xl hover:border-[var(--color-accent-secondary)] transition-colors duration-500 min-h-[300px] text-left group no-cursor-scale"
+      className="relative flex flex-col p-8 bg-[var(--color-bg-secondary)]/80 backdrop-blur-md border border-[var(--color-border-main)] rounded-3xl hover:border-[var(--color-accent-secondary)] transition-colors duration-500 min-h-[300px] text-left group no-cursor-scale overflow-hidden"
     >
+      <motion.div
+        className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 group-hover:opacity-100 transition duration-300 z-0"
+        style={{
+          background: useMotionTemplate`
+            radial-gradient(
+              400px circle at ${spotlightX}px ${spotlightY}px,
+              rgba(255, 255, 255, 0.08),
+              transparent 50%
+            )
+          `,
+        }}
+      />
       <div
         style={{ transform: 'translateZ(50px)' }}
         className="w-16 h-16 rounded-2xl bg-[var(--color-bg-main)] border border-[var(--color-border-main)] flex items-center justify-center mb-8 group-hover:bg-[var(--color-accent-secondary)] transition-colors duration-500"
@@ -169,7 +186,8 @@ export const Domains = ({ onNavigateDomain }: { onNavigateDomain: (domain: any) 
           viewport={{ once: true }}
           className="mb-20"
         >
-          <h2 className="text-[var(--color-accent-secondary)] text-5xl md:text-8xl font-['Britannic_Bold'] tracking-[0.2em] uppercase mb-6 bg-clip-text text-transparent bg-gradient-to-br from-[var(--color-text-main)] to-[var(--color-text-main)]/50">
+
+          <h2 className="text-5xl md:text-8xl font-['Britannic_Bold'] tracking-[0.2em] uppercase mb-6 text-metallic-gradient">
             Domains
           </h2>
           <AnimatedDivider className="text-[var(--color-border-main)]/30" />

@@ -44,7 +44,8 @@ export const Creatives = ({ year }: { year: YearKey }) => {
           viewport={{ once: true }}
           className="mb-20 text-center md:text-left"
         >
-          <h2 className="text-[var(--color-accent-primary)] text-5xl md:text-8xl font-['Britannic_Bold'] tracking-[0.2em] uppercase mb-6 drop-shadow-sm">
+
+          <h2 className="text-5xl md:text-8xl font-['Britannic_Bold'] tracking-[0.2em] uppercase mb-6 text-metallic-gradient">
             Creatives
           </h2>
           <AnimatedDivider className="text-[var(--color-border-main)]/30" />

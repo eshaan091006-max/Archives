@@ -59,7 +59,7 @@ export const PhotoGallery = () => {
           <h2 className="text-[var(--color-accent-secondary)] font-['Inter'] tracking-[0.3em] mb-2 text-sm font-bold uppercase drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
             The Archives
           </h2>
-          <h3 className="text-4xl md:text-5xl lg:text-6xl font-['Boldonse'] text-[var(--color-text-main)] uppercase tracking-wider drop-shadow-md">
+          <h3 className="text-4xl md:text-5xl lg:text-6xl font-['Boldonse'] uppercase tracking-wider text-metallic-gradient">
             Photo Gallery
           </h3>
         </div>

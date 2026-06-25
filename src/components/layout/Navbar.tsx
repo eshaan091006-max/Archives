@@ -129,7 +129,16 @@ export const Navbar = ({ year, setYear }: NavbarProps) => {
             onMouseEnter={playHover}
             className="p-2 rounded-full border border-[var(--color-border-main)] text-[var(--color-text-highlight)] hover:text-[var(--color-accent-primary)] hover:border-[var(--color-accent-primary)] transition-colors"
           >
-            {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+            {soundEnabled ? (
+              <span className="flex items-end gap-[2.5px] h-[16px] w-[16px] justify-center px-[1px] overflow-hidden">
+                <span className="visualizer-bar w-[2px] h-full bg-current rounded-full" />
+                <span className="visualizer-bar w-[2px] h-full bg-current rounded-full" />
+                <span className="visualizer-bar w-[2px] h-full bg-current rounded-full" />
+                <span className="visualizer-bar w-[2px] h-full bg-current rounded-full" />
+              </span>
+            ) : (
+              <VolumeX size={16} />
+            )}
           </button>
 
         </div>
