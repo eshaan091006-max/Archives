@@ -68,7 +68,7 @@ export const themeContent: Record<YearKey, ThemeContent> = {
     heroImage:
       'https://storage.googleapis.com/storage.magicpath.ai/user/419318169308651520/figma-assets/85ca2033-150e-44f5-b2b4-38748c935b74.svg',
     accentColor: '#C9A84C',
-    briefLine1: 'THE WORLD WITHIN US',
+    briefLine1: 'THE WORLD WITHIN',
     briefLine2: 'A SYMBOL OF UNITY',
     creativesDescription: 'MALHAR 2025 EXPLORES THE INNER UNIVERSE WE ALL CARRY — A CELEBRATION OF IDENTITY, EXPRESSION AND TOGETHERNESS ACROSS EVERY DEPARTMENT AND TEAM.',
     creatives: [
