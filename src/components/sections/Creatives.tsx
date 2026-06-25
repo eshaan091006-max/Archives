@@ -72,7 +72,7 @@ export const Creatives = ({ year }: { year: YearKey }) => {
               </div>
 
               {/* Theme Logo Circle */}
-              <div className="relative shrink-0 w-24 h-24 md:w-32 md:h-32 rounded-full border border-[var(--color-accent-primary)]/30 bg-[var(--color-bg-main)]/45 flex items-center justify-center shadow-lg group overflow-hidden">
+              <div className="relative shrink-0 w-32 h-32 md:w-44 md:h-44 rounded-full border border-[var(--color-accent-primary)]/30 bg-[var(--color-bg-main)]/45 flex items-center justify-center shadow-lg group overflow-hidden">
                 {/* Glow behind */}
                 <div className="absolute inset-0 bg-[var(--color-accent-primary)]/10 rounded-full blur-md opacity-70 group-hover:scale-115 transition-transform duration-500" />
                 {/* Rotating dashed line */}
@@ -81,8 +81,8 @@ export const Creatives = ({ year }: { year: YearKey }) => {
                 <div className="absolute inset-3 rounded-full bg-gradient-to-tr from-[var(--color-bg-secondary)]/90 to-[var(--color-bg-main)]/90 backdrop-blur-md border border-[var(--color-border-main)]/30 flex flex-col items-center justify-center" />
                 {/* Text content */}
                 <div className="relative z-10 text-center flex flex-col items-center justify-center select-none">
-                  <span className="block text-[8px] md:text-[10px] uppercase tracking-[0.25em] text-[var(--color-text-main)]/60 font-semibold mb-0.5">MALHAR</span>
-                  <span className="block text-xl md:text-2xl font-['Britannic_Bold'] text-metallic-gradient">
+                  <span className="block text-[6px] md:text-[8px] uppercase tracking-[0.25em] text-[var(--color-text-main)]/60 font-semibold mb-0.5">MALHAR</span>
+                  <span className="block text-lg md:text-xl font-['Britannic_Bold'] text-metallic-gradient">
                     {year === '2023' ? "'23" : year === '2024' ? "'24" : "'25"}
                   </span>
                 </div>
