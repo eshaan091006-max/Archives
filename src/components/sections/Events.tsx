@@ -75,7 +75,9 @@ const SpotlightCard = ({
   );
 };
 
-export const Events = ({ onNavigate }: { onNavigate: (dept: any) => void }) => {
+import { YearKey } from '../../lib/themeData';
+
+export const Events = ({ onNavigate, year }: { onNavigate: (dept: any) => void; year: YearKey }) => {
   const [activeTab, setActiveTab] = useState<'events' | 'conclave'>('events');
 
   return (
@@ -152,7 +154,7 @@ export const Events = ({ onNavigate }: { onNavigate: (dept: any) => void }) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <ConclaveLineup />
+              <ConclaveLineup year={year} />
             </motion.div>
           )}
         </div>

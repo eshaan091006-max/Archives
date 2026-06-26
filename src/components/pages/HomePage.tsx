@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navbar } from '../layout/Navbar';
 import { BackgroundEffects } from '../layout/BackgroundEffects';
-import { CustomCursor } from '../layout/CustomCursor';
 import { ScrollToTop } from '../layout/ScrollToTop';
 import { Hero } from '../sections/Hero';
 import { Stats } from '../sections/Stats';
@@ -26,7 +25,6 @@ interface HomePageProps {
 export const HomePage = ({ year, setYear, onNavigate, onNavigateDomain }: HomePageProps) => {
   return (
     <main className="min-h-screen md:cursor-none bg-[var(--color-bg-main)] selection:bg-[var(--color-accent-primary)] selection:text-[var(--color-bg-main)] transition-colors duration-500 overflow-x-hidden">
-      <CustomCursor />
       <BackgroundEffects />
       <ScrollToTop />
       <Navbar year={year} setYear={setYear} />
@@ -52,7 +50,7 @@ export const HomePage = ({ year, setYear, onNavigate, onNavigateDomain }: HomePa
       </ScrollTransition>
 
       <ScrollTransition type="mask" className="z-40 relative bg-[var(--color-bg-main)]">
-        <Events onNavigate={onNavigate} />
+        <Events onNavigate={onNavigate} year={year} />
       </ScrollTransition>
 
       <ScrollTransition type="mask" className="z-45 relative bg-[var(--color-bg-main)]">

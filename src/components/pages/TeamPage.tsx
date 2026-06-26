@@ -102,7 +102,7 @@ interface TeamPageProps {
 export const TeamPage = ({ department, year, onBack }: TeamPageProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { playTransition, playHover } = useSound();
-  const teamData = getTeamData(department);
+  const teamData = getTeamData(department, year);
   const [activeTab, setActiveTab] = useState<'core' | 'workforce'>('core');
 
   useEffect(() => {
@@ -209,21 +209,25 @@ export const TeamPage = ({ department, year, onBack }: TeamPageProps) => {
         {/* Core Tab */}
         {activeTab === 'core' && (
           <div className="max-w-5xl mx-auto pb-12 mt-8 px-6">
-            {/* OC Section */}
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center">
-              <div className="relative cursor-default">
-                <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-secondary)] rounded-[2rem] blur-xl opacity-20 group-hover/tilt:opacity-40 transition-opacity duration-700" />
-                <TeamTiltCard
-                  glowOpacity="0.1"
-                  className="w-full min-w-[320px] md:min-w-[450px] p-12 bg-[var(--color-bg-secondary)]/80 backdrop-blur-2xl border-[var(--color-accent-primary)]/40 text-center shadow-2xl flex flex-col items-center gap-5 hover:border-[var(--color-accent-primary)]/70 transition-colors"
-                >
-                  <span className="text-xs font-['Inter'] uppercase tracking-[0.3em] text-[var(--color-accent-primary)] font-bold flex items-center gap-2">
-                    Organizer in Charge (OC)
-                  </span>
-                  <p className="text-5xl font-['Boldonse'] text-[var(--color-text-main)]">{teamData.oc}</p>
-                </TeamTiltCard>
-              </div>
-            </motion.div>
+            {/* OC & Anchor Section */}
+            <div className="flex flex-wrap justify-center gap-12 w-full">
+              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center">
+                <div className="relative cursor-default">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-secondary)] rounded-[2rem] blur-xl opacity-20 group-hover/tilt:opacity-40 transition-opacity duration-700" />
+                  <TeamTiltCard
+                    glowOpacity="0.1"
+                    className="w-full min-w-[320px] md:min-w-[450px] p-12 bg-[var(--color-bg-secondary)]/80 backdrop-blur-2xl border-[var(--color-accent-primary)]/40 text-center shadow-2xl flex flex-col items-center gap-5 hover:border-[var(--color-accent-primary)]/70 transition-colors"
+                  >
+                    <span className="text-xs font-['Inter'] uppercase tracking-[0.3em] text-[var(--color-accent-primary)] font-bold flex items-center gap-2">
+                      Organizer in Charge (OC)
+                    </span>
+                    <p className="text-5xl font-['Boldonse'] text-[var(--color-text-main)]">{teamData.oc}</p>
+                  </TeamTiltCard>
+                </div>
+              </motion.div>
+
+
+            </div>
 
             {/* OGs Section */}
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col items-center mt-24">
@@ -248,20 +252,22 @@ export const TeamPage = ({ department, year, onBack }: TeamPageProps) => {
             </motion.div>
 
             {/* Coordis Section */}
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-col items-center mt-24">
-              <div className="flex items-center gap-4 mb-10">
-                <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[var(--color-border-main)]" />
-                <h2 className="text-xs font-['Inter'] uppercase text-[var(--color-text-main)]/50 tracking-[0.25em] font-bold">Coordinators (Coordis)</h2>
-                <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[var(--color-border-main)]" />
-              </div>
-              <div className="flex flex-wrap justify-center gap-4 w-full max-w-4xl">
-                {teamData.coordis.map((coordi, idx) => (
-                  <div key={idx} className="px-8 py-3 rounded-full border border-[var(--color-border-main)]/20 bg-[var(--color-bg-secondary)]/30 backdrop-blur-sm text-center hover:bg-[var(--color-bg-secondary)] hover:border-[var(--color-border-main)]/50 transition-colors duration-300 cursor-default">
-                    <p className="text-sm font-['Inter'] text-[var(--color-text-main)]/70 tracking-wide">{coordi}</p>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+            {teamData.coordis && teamData.coordis.length > 0 && (
+  <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-col items-center mt-24">
+    <div className="flex items-center gap-4 mb-10">
+      <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[var(--color-border-main)]" />
+      <h2 className="text-xs font-['Inter'] uppercase text-[var(--color-text-main)]/50 tracking-[0.25em] font-bold">Coordinators (Coordis)</h2>
+      <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[var(--color-border-main)]" />
+    </div>
+    <div className="flex flex-wrap justify-center gap-6 w-full max-w-5xl">
+      {teamData.coordis.map((coordi, idx) => (
+        <div key={idx} className="px-10 py-4 rounded-full border border-[var(--color-border-main)]/30 bg-[var(--color-bg-secondary)]/40 backdrop-blur-md text-center hover:bg-[var(--color-bg-secondary)] hover:border-[var(--color-accent-primary)]/50 transition-all duration-300 cursor-default shadow-lg">
+          <p className="text-lg font-['Inter'] font-semibold text-[var(--color-text-main)]/90 tracking-wider">{coordi}</p>
+        </div>
+      ))}
+    </div>
+  </motion.div>
+)}
           </div>
         )}
 
@@ -300,6 +306,11 @@ export const TeamPage = ({ department, year, onBack }: TeamPageProps) => {
             </div>
 
             {/* Scrollable Workforce List */}
+            {teamData.anchor && (
+              <div className="text-xs font-['Inter'] uppercase text-[var(--color-text-main)]/60 mb-2">
+                Anchor: <span className="text-[var(--color-accent-primary)]">{teamData.anchor}</span>
+              </div>
+            )}
             <div className="max-h-[600px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-[var(--color-accent-primary)]/50 scrollbar-track-transparent">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-y-10 gap-x-16 relative z-10 pl-4 md:pl-12">
                 {teamData.workforce.map((name, idx) => (

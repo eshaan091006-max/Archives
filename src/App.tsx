@@ -7,15 +7,12 @@ import { Preloader } from './components/layout/Preloader';
 import { NoiseOverlay } from './components/layout/NoiseOverlay';
 import { GamificationProvider, useGamification, GamificationNotification } from './context/GamificationContext';
 import { ThemeSweepTransition } from './components/layout/ThemeSweepTransition';
+const VaultModal = React.lazy(() => import('./components/vault/VaultModal').then(m => ({ default: m.VaultModal })));
+import { CustomCursor } from './components/layout/CustomCursor';
 
-const DepartmentPage = React.lazy(() => import('./components/pages/DepartmentPage').then(m => ({ default: m.DepartmentPage })));
-const DomainPage = React.lazy(() => import('./components/pages/DomainPage').then(m => ({ default: m.DomainPage })));
-const TeamPage = React.lazy(() => import('./components/pages/TeamPage').then(m => ({ default: m.TeamPage })));
-
-const ThemeWrapper = ({ year, children }: { year: YearKey, children: React.ReactNode }) => {
+const ThemeWrapper = ({ year, children }: { year: YearKey; children: React.ReactNode }) => {
   const { foundFrogs } = useGamification();
   const themeClass = foundFrogs.length >= 5 ? 'theme-vip-gold' : `theme-${year}`;
-  
   return (
     <div className={themeClass}>
       {children}
@@ -23,6 +20,11 @@ const ThemeWrapper = ({ year, children }: { year: YearKey, children: React.React
     </div>
   );
 };
+
+const DepartmentPage = React.lazy(() => import('./components/pages/DepartmentPage').then(m => ({ default: m.DepartmentPage })));
+const DomainPage = React.lazy(() => import('./components/pages/DomainPage').then(m => ({ default: m.DomainPage })));
+const TeamPage = React.lazy(() => import('./components/pages/TeamPage').then(m => ({ default: m.TeamPage })));
+
 
 function App() {
   const [year, setYear] = useState<YearKey>(() => {
@@ -34,6 +36,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState<any>(null);
   const [currentDomain, setCurrentDomain] = useState<any>(null);
   const [currentTeam, setCurrentTeam] = useState<string | null>(null);
+  const [vaultSolved, setVaultSolved] = useState<boolean>(() => !!sessionStorage.getItem('vaultSolved'));
 
   useEffect(() => {
     localStorage.setItem('magicpath-theme', year);
@@ -49,6 +52,7 @@ function App() {
     <ReactLenis root>
       <GamificationProvider>
         <ThemeWrapper year={year}>
+          <CustomCursor />
           <NoiseOverlay />
           <ThemeSweepTransition
             currentYear={year}
@@ -61,13 +65,26 @@ function App() {
         </AnimatePresence>
 
         {!loading && (
-          <HomePage
-            year={year}
-            setYear={handleYearChange}
-            onNavigate={setCurrentPage}
-            onNavigateDomain={setCurrentDomain}
-          />
-        )}
+        <>
+          {vaultSolved && (
+            <HomePage
+              year={year}
+              setYear={handleYearChange}
+              onNavigate={setCurrentPage}
+              onNavigateDomain={setCurrentDomain}
+            />
+          )}
+          {!vaultSolved && (
+            <React.Suspense fallback={null}>
+              <VaultModal onUnlock={() => {
+                setVaultSolved(true);
+                sessionStorage.setItem('vaultSolved', 'true');
+              }} />
+            </React.Suspense>
+          )}
+        </>
+      )}
+
 
         <AnimatePresence>
           <React.Suspense fallback={null}>

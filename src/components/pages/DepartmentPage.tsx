@@ -52,9 +52,24 @@ const LiquidInkBackground = ({ isInkActive }: { isInkActive: boolean }) => {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
+    const updateSize = () => {
+      const parent = canvas.parentElement;
+      if (parent) {
+        width = canvas.width = parent.offsetWidth;
+        height = canvas.height = parent.offsetHeight;
+      }
+    };
+    updateSize();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateSize();
+    });
+    if (canvas.parentElement) {
+      resizeObserver.observe(canvas.parentElement);
+    }
+
     const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      updateSize();
     };
 
     const spawnBlot = (x: number, y: number, size = 5, maxSize = 20, isSatellite = false) => {
@@ -87,13 +102,18 @@ const LiquidInkBackground = ({ isInkActive }: { isInkActive: boolean }) => {
 
     const handleMouseMove = (e: MouseEvent) => {
       if (isInkActive && Math.random() < 0.12) {
-        spawnBlot(e.clientX, e.clientY, Math.random() * 1.5 + 0.5, Math.random() * 6 + 3, true);
+        const scrollContainer = canvas.closest('.overflow-y-auto');
+        const scrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
+        spawnBlot(e.clientX, e.clientY + scrollTop, Math.random() * 1.5 + 0.5, Math.random() * 6 + 3, true);
       }
     };
 
     const handleMouseDown = (e: MouseEvent) => {
       if (!isInkActive) return;
-      spawnBlot(e.clientX, e.clientY, 8, Math.random() * 25 + 18);
+      const scrollContainer = canvas.closest('.overflow-y-auto');
+      const scrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
+      const mouseY = e.clientY + scrollTop;
+      spawnBlot(e.clientX, mouseY, 8, Math.random() * 25 + 18);
 
       const satelliteCount = Math.floor(Math.random() * 6) + 6;
       for (let i = 0; i < satelliteCount; i++) {
@@ -101,7 +121,7 @@ const LiquidInkBackground = ({ isInkActive }: { isInkActive: boolean }) => {
         const dist = Math.random() * 60 + 12;
         spawnBlot(
           e.clientX + Math.cos(angle) * dist,
-          e.clientY + Math.sin(angle) * dist,
+          mouseY + Math.sin(angle) * dist,
           Math.random() * 2 + 0.5,
           Math.random() * 9 + 4,
           true
@@ -175,6 +195,7 @@ const LiquidInkBackground = ({ isInkActive }: { isInkActive: boolean }) => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
+      resizeObserver.disconnect();
       cancelAnimationFrame(animationId);
     };
   }, [isInkActive]);
@@ -461,18 +482,37 @@ const FineArtsCanvasBackground = ({
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
+    const updateSize = () => {
+      const parent = canvas.parentElement;
+      if (parent) {
+        width = canvas.width = parent.offsetWidth;
+        height = canvas.height = parent.offsetHeight;
+      }
+    };
+    updateSize();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateSize();
+    });
+    if (canvas.parentElement) {
+      resizeObserver.observe(canvas.parentElement);
+    }
+
     const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      updateSize();
     };
 
     const handleMouseDown = (e: MouseEvent) => {
       if (!isPaintActive) return;
       isDrawing.current = true;
 
+      const scrollContainer = canvas.closest('.overflow-y-auto');
+      const scrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
+      const mouseY = e.clientY + scrollTop;
+
       // Start new brush stroke
       strokesRef.current.push({
-        points: [{ x: e.clientX, y: e.clientY }],
+        points: [{ x: e.clientX, y: mouseY }],
         color: activeColor,
         opacity: 0.9,
       });
@@ -482,8 +522,8 @@ const FineArtsCanvasBackground = ({
 
       for (let i = 0; i < dripCount; i++) {
         dripsList.push({
-          currY: e.clientY,
-          targetY: e.clientY + Math.random() * 80 + 20,
+          currY: mouseY,
+          targetY: mouseY + Math.random() * 80 + 20,
           speed: Math.random() * 1.5 + 0.5,
           width: Math.random() * 2 + 1,
         });
@@ -491,7 +531,7 @@ const FineArtsCanvasBackground = ({
 
       splattersRef.current.push({
         x: e.clientX,
-        y: e.clientY,
+        y: mouseY,
         size: splatSize,
         color: activeColor,
         opacity: 0.95,
@@ -508,8 +548,12 @@ const FineArtsCanvasBackground = ({
       if (!isPaintActive) return;
 
       if (isDrawing.current && strokesRef.current.length > 0) {
+        const scrollContainer = canvas.closest('.overflow-y-auto');
+        const scrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
+        const mouseY = e.clientY + scrollTop;
+
         const currentStroke = strokesRef.current[strokesRef.current.length - 1];
-        currentStroke.points.push({ x: e.clientX, y: e.clientY });
+        currentStroke.points.push({ x: e.clientX, y: mouseY });
       }
     };
 
@@ -1197,9 +1241,24 @@ const EtcwBackground = ({ isEtcwActive }: { isEtcwActive: boolean }) => {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
+    const updateSize = () => {
+      const parent = canvas.parentElement;
+      if (parent) {
+        width = canvas.width = parent.offsetWidth;
+        height = canvas.height = parent.offsetHeight;
+      }
+    };
+    updateSize();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateSize();
+    });
+    if (canvas.parentElement) {
+      resizeObserver.observe(canvas.parentElement);
+    }
+
     const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      updateSize();
     };
     window.addEventListener('resize', handleResize);
 
@@ -1226,6 +1285,10 @@ const EtcwBackground = ({ isEtcwActive }: { isEtcwActive: boolean }) => {
     };
 
     const handleMouseMove = (e: MouseEvent) => {
+      const scrollContainer = canvas.closest('.overflow-y-auto');
+      const scrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
+      const mouseY = e.clientY + scrollTop;
+
       const leftDist = e.clientX / width;
       const rightDist = 1 - e.clientX / width;
 
@@ -1244,7 +1307,7 @@ const EtcwBackground = ({ isEtcwActive }: { isEtcwActive: boolean }) => {
       if (Math.random() < 0.4) {
         particlesRef.current.push({
           x: e.clientX,
-          y: e.clientY,
+          y: mouseY,
           vx: (Math.random() - 0.5) * 1.5,
           vy: -Math.random() * 0.5 - 0.5,
           size: Math.random() * 5 + 3,
@@ -1262,7 +1325,10 @@ const EtcwBackground = ({ isEtcwActive }: { isEtcwActive: boolean }) => {
       if (target.closest('button') || target.closest('a') || target.closest('.no-cursor-scale')) {
         return;
       }
-      spawnConfetti(e.clientX, e.clientY, 25);
+      const scrollContainer = canvas.closest('.overflow-y-auto');
+      const scrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
+      const mouseY = e.clientY + scrollTop;
+      spawnConfetti(e.clientX, mouseY, 25);
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -1377,6 +1443,7 @@ const EtcwBackground = ({ isEtcwActive }: { isEtcwActive: boolean }) => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
+      resizeObserver.disconnect();
       cancelAnimationFrame(animationId);
     };
   }, [isEtcwActive]);
@@ -1881,6 +1948,13 @@ const PremiumManuscriptCard = ({
   );
 };
 
+const PageWrapper = ({ id, children }: { id: string; children: React.ReactNode }) => {
+  if (id === 'la' || id === 'fa' || id === 'etcw') {
+    return <div className="relative w-full min-h-full flex flex-col">{children}</div>;
+  }
+  return <>{children}</>;
+};
+
 export const DepartmentPage = ({ id, name, year, onBack }: DepartmentPageProps) => {
   const { playTransition, playHover } = useSound();
   const [isInkActive, setIsInkActive] = useState(id === 'la');
@@ -1951,6 +2025,8 @@ export const DepartmentPage = ({ id, name, year, onBack }: DepartmentPageProps) 
     wrapperClass = 'bg-[#1a0505] text-rose-100 cursor-none'; // Deep crimson theatre background
   }
 
+
+
   return (
     <motion.div
       layoutId={`dept-${id}`}
@@ -1960,6 +2036,7 @@ export const DepartmentPage = ({ id, name, year, onBack }: DepartmentPageProps) 
       data-lenis-prevent="true"
       onClick={id === 'fa' && isPaintActive ? cyclePaintColor : undefined}
     >
+      <PageWrapper id={id}>
       {/* 1. Literary Arts Elements */}
       {id === 'la' && (
         <>
@@ -2456,6 +2533,7 @@ export const DepartmentPage = ({ id, name, year, onBack }: DepartmentPageProps) 
           </div>
         )}
       </div>
+      </PageWrapper>
     </motion.div>
   );
 };
