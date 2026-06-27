@@ -6,6 +6,154 @@ import * as THREE from 'three';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Dial } from './Dial';
 
+// Web Audio synthesizer helper to generate realistic mechanical clicks/clanks in real-time
+class SynthAudio {
+  private ctx: AudioContext | null = null;
+
+  private init() {
+    if (!this.ctx) {
+      this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
+
+  playDialClick() {
+    this.init();
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(140, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(10, this.ctx.currentTime + 0.05);
+
+    gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.055);
+  }
+
+  playAccessGranted() {
+    this.init();
+    if (!this.ctx) return;
+    
+    // Double heavy metallic chime
+    [0, 0.12].forEach((delay) => {
+      const time = this.ctx!.currentTime + delay;
+      const osc1 = this.ctx!.createOscillator();
+      const osc2 = this.ctx!.createOscillator();
+      const gain = this.ctx!.createGain();
+
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(520, time);
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(660, time);
+
+      gain.gain.setValueAtTime(0.18, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.8);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(this.ctx!.destination);
+
+      osc1.start(time);
+      osc2.start(time);
+      osc1.stop(time + 0.85);
+      osc2.stop(time + 0.85);
+    });
+  }
+
+  playBoltRetraction() {
+    this.init();
+    if (!this.ctx) return;
+    
+    const noise = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    noise.type = 'sawtooth';
+    noise.frequency.setValueAtTime(80, this.ctx.currentTime);
+    noise.frequency.linearRampToValueAtTime(35, this.ctx.currentTime + 0.5);
+
+    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.6);
+
+    noise.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start();
+    noise.stop(this.ctx.currentTime + 0.65);
+  }
+
+  playWheelSpin() {
+    this.init();
+    if (!this.ctx) return;
+    
+    // Whoosh / rotating friction sound
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+    osc.frequency.linearRampToValueAtTime(80, this.ctx.currentTime + 0.8);
+
+    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.8);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.8);
+  }
+
+  playDoorOpen() {
+    this.init();
+    if (!this.ctx) return;
+    
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(55, this.ctx.currentTime);
+    osc.frequency.linearRampToValueAtTime(48, this.ctx.currentTime + 1.8);
+
+    gain.gain.setValueAtTime(0.22, this.ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + 0.5);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 2.0);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 2.05);
+  }
+
+  playHeavyThud() {
+    this.init();
+    if (!this.ctx) return;
+    
+    // Very low bass impact thud for door settle
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(70, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(10, this.ctx.currentTime + 0.4);
+
+    gain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.45);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.5);
+  }
+}
+
+const audio = new SynthAudio();
+
 /* ─────────────────────────────────────────────────────────────
    HINGE ASSEMBLY (fixed wall side + rotating door side)
 ───────────────────────────────────────────────────────────── */
@@ -44,9 +192,15 @@ const WallHinges: React.FC = () => (
 );
 
 /* ─────────────────────────────────────────────────────────────
-   CIRCULAR VAULT DOOR
+   CIRCULAR VAULT DOOR WITH ANIMATED RETRACTING BOLTS
 ───────────────────────────────────────────────────────────── */
-const VaultDoor3D: React.FC<{ open: boolean; unlocked: boolean }> = ({ open, unlocked }) => {
+const VaultDoor3D: React.FC<{
+  open: boolean;
+  unlocked: boolean;
+  boltsRetracted: boolean;
+  wheelRotation: number;
+  onWheelClick: () => void;
+}> = ({ open, unlocked, boltsRetracted, wheelRotation, onWheelClick }) => {
   const R = R_DOOR;
   const D = 0.28;
 
@@ -54,10 +208,22 @@ const VaultDoor3D: React.FC<{ open: boolean; unlocked: boolean }> = ({ open, unl
   const emissive = unlocked ? '#78350f' : '#1e3a5f';
   const glow     = unlocked ? 2.2 : 0.7;
 
-  // Heavy vault door: high mass, moderate friction → slow start, slight overshoot, settle
+  // Heavy vault door physics rotation: extremely heavy mass (slow acceleration) & low friction (overshoots and settles bounce)
   const { rotY } = useSpring({
-    rotY: open ? -Math.PI * 0.80 : 0,
-    config: { mass: 16, tension: 26, friction: 18 },
+    rotY: open ? -Math.PI * 0.82 : 0,
+    config: { mass: 28, tension: 18, friction: 32 },
+  });
+
+  // Retract locking bolts inward towards center
+  const { boltOffset } = useSpring({
+    boltOffset: boltsRetracted ? -0.16 : 0,
+    config: { mass: 2.5, tension: 160, friction: 14 },
+  });
+
+  // Animate the wheel rotation spring
+  const { wheelRot } = useSpring({
+    wheelRot: wheelRotation,
+    config: { mass: 1, tension: 90, friction: 15 },
   });
 
   return (
@@ -129,13 +295,21 @@ const VaultDoor3D: React.FC<{ open: boolean; unlocked: boolean }> = ({ open, unl
           <meshStandardMaterial color={accent} emissive={accent} emissiveIntensity={unlocked ? 6 : 2.5} />
         </mesh>
 
-        {/* 8 perimeter locking bolts */}
+        {/* 8 perimeter locking bolts with animated radial offset */}
         {Array.from({ length: 8 }, (_, i) => {
           const a = (i / 8) * Math.PI * 2;
-          const bx = Math.cos(a) * (R - 0.2);
-          const by = Math.sin(a) * (R - 0.2);
           return (
-            <group key={i} position={[bx, by, D / 2 + 0.018]}>
+            <animated.group
+              key={i}
+              position={boltOffset.to((offset) => {
+                const currentRadius = R - 0.2 + offset;
+                return [
+                  Math.cos(a) * currentRadius,
+                  Math.sin(a) * currentRadius,
+                  D / 2 + 0.018
+                ];
+              })}
+            >
               <mesh rotation={[Math.PI / 2, 0, 0]}>
                 <cylinderGeometry args={[0.06, 0.06, 0.04, 18]} />
                 <meshStandardMaterial color="#222226" metalness={0.95} roughness={0.12} />
@@ -144,46 +318,61 @@ const VaultDoor3D: React.FC<{ open: boolean; unlocked: boolean }> = ({ open, unl
                 <cylinderGeometry args={[0.042, 0.042, 0.024, 18]} />
                 <meshStandardMaterial color="#6b7280" metalness={1} roughness={0.04} envMapIntensity={2} />
               </mesh>
-            </group>
+            </animated.group>
           );
         })}
 
-        {/* 8 spokes */}
-        {Array.from({ length: 8 }, (_, i) => {
-          const a = (i / 8) * Math.PI * 2;
-          return (
-            <mesh key={i}
-              position={[Math.cos(a) * 0.3, Math.sin(a) * 0.3, D / 2 + 0.036]}
-              rotation={[0, 0, a]}
-            >
-              <boxGeometry args={[0.52, 0.018, 0.018]} />
-              <meshStandardMaterial color="#3f3f46" metalness={0.95} roughness={0.1} />
-            </mesh>
-          );
-        })}
+        {/* INTERACTIVE WHEEL HUB AND SPOKES (rotate on wheelRot) */}
+        <animated.group
+          position={[0, 0, D / 2 + 0.036]}
+          rotation-z={wheelRot}
+          onClick={(e) => {
+            e.stopPropagation();
+            onWheelClick();
+          }}
+          onPointerOver={() => {
+            document.body.style.cursor = unlocked && wheelRotation === 0 ? 'pointer' : 'default';
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = 'default';
+          }}
+        >
+          {/* 8 spokes */}
+          {Array.from({ length: 8 }, (_, i) => {
+            const a = (i / 8) * Math.PI * 2;
+            return (
+              <mesh key={i}
+                position={[Math.cos(a) * 0.3, Math.sin(a) * 0.3, 0]}
+                rotation={[0, 0, a]}
+              >
+                <boxGeometry args={[0.52, 0.018, 0.018]} />
+                <meshStandardMaterial color="#3f3f46" metalness={0.95} roughness={0.1} />
+              </mesh>
+            );
+          })}
 
-        {/* Hub ring */}
-        <mesh position={[0, 0, D / 2 + 0.036]}>
-          <torusGeometry args={[0.17, 0.024, 16, 40]} />
-          <meshStandardMaterial color="#52525b" metalness={1} roughness={0.05} />
-        </mesh>
+          {/* Hub ring */}
+          <mesh position={[0, 0, 0]}>
+            <torusGeometry args={[0.17, 0.024, 16, 40]} />
+            <meshStandardMaterial color="#52525b" metalness={1} roughness={0.05} />
+          </mesh>
 
-        {/* Hub cap */}
-        <mesh position={[0, 0, D / 2 + 0.048]} rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.105, 0.105, 0.042, 28]} />
-          <meshStandardMaterial
-            color={unlocked ? '#f59e0b' : '#3f3f46'}
-            metalness={1} roughness={0.04}
-            emissive={unlocked ? '#92400e' : '#000'} emissiveIntensity={unlocked ? 4 : 0}
-          />
-        </mesh>
-        <mesh position={[0, 0, D / 2 + 0.072]} rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.04, 0.04, 0.02, 16]} />
-          <meshStandardMaterial color="#09090b" metalness={0.8} roughness={0.3} />
-        </mesh>
-
-        {/* Door edge bevels — 4 sides of the rim depth */}
-        {/* Side cylinder edge (dark band around circumference) already handled by the main cylinder */}
+          {/* Hub cap */}
+          <mesh position={[0, 0, 0.012]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.105, 0.105, 0.042, 28]} />
+            <meshStandardMaterial
+              color={unlocked ? '#f59e0b' : '#3f3f46'}
+              metalness={1} roughness={0.04}
+              emissive={unlocked ? '#92400e' : '#000'} emissiveIntensity={unlocked ? 4 : 0}
+            />
+          </mesh>
+          
+          {/* Hub cap inner pin */}
+          <mesh position={[0, 0, 0.036]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.04, 0.04, 0.02, 16]} />
+            <meshStandardMaterial color="#09090b" metalness={0.8} roughness={0.3} />
+          </mesh>
+        </animated.group>
 
         {/* Back face */}
         <mesh position={[0, 0, -D / 2 - 0.003]} rotation={[Math.PI, 0, 0]}>
@@ -206,18 +395,18 @@ const VaultWall: React.FC<{ unlocked: boolean }> = ({ unlocked }) => {
 
   return (
     <group>
-      {/* Wall */}
-      <mesh position={[0, 0, -0.5]} receiveShadow>
-        <boxGeometry args={[20, 13, 0.5]} />
-        <meshStandardMaterial color="#08080a" metalness={0.1} roughness={0.92} />
+      {/* Wall - made wider/taller and using a darker, less reflective material to blend with the BG */}
+      <mesh position={[0, 0, -0.55]}>
+        <boxGeometry args={[30, 20, 0.5]} />
+        <meshStandardMaterial color="#050508" metalness={0.1} roughness={0.98} />
       </mesh>
 
       {/* Circular frame ring */}
       <mesh position={[0, 0, -0.26]}>
         <torusGeometry args={[R + 0.14, 0.14, 24, 90]} />
-        <meshStandardMaterial color={unlocked ? '#451a03' : '#18181b'}
-          metalness={0.85} roughness={0.2}
-          emissive={accent} emissiveIntensity={unlocked ? 0.35 : 0.1} />
+        <meshStandardMaterial color={unlocked ? '#451a03' : '#121215'}
+          metalness={0.9} roughness={0.15}
+          emissive={accent} emissiveIntensity={unlocked ? 0.35 : 0.08} />
       </mesh>
 
       {/* Chrome inner lip */}
@@ -238,14 +427,14 @@ const VaultWall: React.FC<{ unlocked: boolean }> = ({ unlocked }) => {
         <meshBasicMaterial color="#000000" />
       </mesh>
 
-      {/* Floor */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.0, 0]}>
-        <planeGeometry args={[20, 14]} />
-        <meshStandardMaterial color="#070709" metalness={0.2} roughness={0.95} />
+      {/* Floor - expanded slightly and made darker */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.2, 0]}>
+        <planeGeometry args={[30, 16]} />
+        <meshStandardMaterial color="#030304" metalness={0.1} roughness={0.99} />
       </mesh>
 
       {/* Floor glow line */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.98, 0]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.18, 0]}>
         <planeGeometry args={[2.8, 0.04]} />
         <meshBasicMaterial color={accent} transparent opacity={0.35} />
       </mesh>
@@ -280,7 +469,7 @@ const Dust: React.FC = () => {
         p.y,
         p.z
       );
-      dummy.scale.setScalar(0.004);  // tiny — no more giant orange blob
+      dummy.scale.setScalar(0.004);
       dummy.updateMatrix();
       mesh.current!.setMatrixAt(i, dummy.matrix);
     });
@@ -296,24 +485,50 @@ const Dust: React.FC = () => {
 };
 
 /* ─────────────────────────────────────────────────────────────
-   CAMERA ZOOM
+   CAMERA ZOOM WITH SCREEN SHAKE & HEAVY SETTLE
 ───────────────────────────────────────────────────────────── */
-const CameraZoom: React.FC<{ zoom: boolean; onBlackout: () => void }> = ({ zoom, onBlackout }) => {
+const CameraZoom: React.FC<{
+  zoom: boolean;
+  shake: boolean;
+  settleShake: boolean;
+  onBlackout: () => void;
+}> = ({ zoom, shake, settleShake, onBlackout }) => {
   const { camera } = useThree();
   const t = useRef(0);
   const fired = useRef(false);
 
-  useFrame((_, delta) => {
-    if (!zoom) return;
-    t.current = Math.min(t.current + delta * 0.36, 1);
-    const ease = t.current * t.current * (3 - 2 * t.current);
-    camera.position.z = THREE.MathUtils.lerp(6.0, -3.5, ease);
-    camera.position.y = THREE.MathUtils.lerp(0.3, 0.0, ease);
-    (camera as THREE.PerspectiveCamera).fov = THREE.MathUtils.lerp(40, 88, ease * ease);
-    camera.updateProjectionMatrix();
-    if (t.current >= 0.72 && !fired.current) {
-      fired.current = true;
-      onBlackout();
+  useFrame((state, delta) => {
+    if (zoom) {
+      // Speed multiplier increased to make it feel snappier
+      t.current = Math.min(t.current + delta * 0.72, 1);
+      
+      // Exponential Ease-In for rapid acceleration feel at the end
+      const ease = t.current === 0 ? 0 : Math.pow(2, 10 * (t.current - 1));
+      
+      camera.position.z = THREE.MathUtils.lerp(6.0, -3.2, ease);
+      camera.position.y = THREE.MathUtils.lerp(0.3, 0.0, ease);
+      // Fov increases wider (up to 110) for strong warp-speed illusion
+      (camera as THREE.PerspectiveCamera).fov = THREE.MathUtils.lerp(40, 110, ease);
+      camera.updateProjectionMatrix();
+
+      // Trigger blackout later in the curve for maximum immersion right before impact
+      if (t.current >= 0.88 && !fired.current) {
+        fired.current = true;
+        onBlackout();
+      }
+    } else if (shake) {
+      // Bolts retraction mechanical shake
+      const time = state.clock.getElapsedTime();
+      camera.position.x = Math.sin(time * 70) * 0.014;
+      camera.position.y = 0.3 + Math.cos(time * 75) * 0.014;
+    } else if (settleShake) {
+      // Heavy settle thud shake
+      const time = state.clock.getElapsedTime();
+      camera.position.x = Math.sin(time * 50) * 0.007;
+      camera.position.y = 0.3 + Math.cos(time * 55) * 0.007;
+    } else {
+      camera.position.x = 0;
+      camera.position.y = 0.3;
     }
   });
   return null;
@@ -323,34 +538,50 @@ const CameraZoom: React.FC<{ zoom: boolean; onBlackout: () => void }> = ({ zoom,
    SCENE
 ───────────────────────────────────────────────────────────── */
 const VaultScene: React.FC<{
-  open: boolean; unlocked: boolean; zoom: boolean; onBlackout: () => void;
-}> = ({ open, unlocked, zoom, onBlackout }) => (
+  open: boolean;
+  unlocked: boolean;
+  zoom: boolean;
+  shake: boolean;
+  settleShake: boolean;
+  boltsRetracted: boolean;
+  wheelRotation: number;
+  onWheelClick: () => void;
+  onBlackout: () => void;
+}> = ({ open, unlocked, zoom, shake, settleShake, boltsRetracted, wheelRotation, onWheelClick, onBlackout }) => (
   <>
     <PerspectiveCamera makeDefault position={[0, 0.3, 6.0]} fov={40} />
-    <CameraZoom zoom={zoom} onBlackout={onBlackout} />
+    <CameraZoom zoom={zoom} shake={shake} settleShake={settleShake} onBlackout={onBlackout} />
 
-    <ambientLight intensity={0.05} color="#8ab4d4" />
+    <ambientLight intensity={0.015} color="#4b5563" />
 
-    {/* Key from upper-right */}
-    <directionalLight position={[5, 9, 6]} intensity={unlocked ? 2.4 : 1.6}
-      color={unlocked ? '#fef3c7' : '#dbeafe'} />
+    {/* Key from upper-right - intensity reduced and warm tone maintained */}
+    <directionalLight position={[4, 6, 4]} intensity={unlocked ? 1.4 : 0.75}
+      color={unlocked ? '#fef3c7' : '#93c5fd'} />
 
-    {/* Cool fill from left */}
-    <directionalLight position={[-4, 2, 3]} intensity={0.22} color="#93c5fd" />
+    {/* Cool subtle fill from left */}
+    <directionalLight position={[-4, 2, 2]} intensity={0.12} color="#60a5fa" />
 
     {/* Door front glow */}
-    <pointLight position={[0, 0, 2.5]} intensity={unlocked ? 4 : 1.5}
-      color={unlocked ? '#f59e0b' : '#60a5fa'} distance={7} />
+    <pointLight position={[0, 0, 2.2]} intensity={unlocked ? 3.5 : 1.1}
+      color={unlocked ? '#f59e0b' : '#3b82f6'} distance={6} />
 
     {/* Floor bounce */}
-    <pointLight position={[0, -2.5, 1.5]} intensity={0.8}
-      color={unlocked ? '#f59e0b' : '#3b82f6'} distance={6} />
+    <pointLight position={[0, -2.5, 1.2]} intensity={0.4}
+      color={unlocked ? '#f59e0b' : '#3b82f6'} distance={5} />
 
     <Dust />
     <VaultWall unlocked={unlocked} />
-    <VaultDoor3D open={open} unlocked={unlocked} />
+    <WallHinges />
+    <VaultDoor3D 
+      open={open} 
+      unlocked={unlocked} 
+      boltsRetracted={boltsRetracted} 
+      wheelRotation={wheelRotation}
+      onWheelClick={onWheelClick}
+    />
 
-    <Environment preset="night" />
+    {/* Loading custom sunset/neon studio HDR preset environment for reflections */}
+    <Environment preset="studio" />
   </>
 );
 
@@ -362,7 +593,12 @@ const CORRECT = [4, 2, 7];
 export const VaultModal: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => {
   const [values, setValues] = useState([0, 0, 0]);
   const [unlocked, setUnlocked] = useState(false);
+  const [promptInteraction, setPromptInteraction] = useState(false);
+  const [wheelRotation, setWheelRotation] = useState(0);
+  const [boltsRetracted, setBoltsRetracted] = useState(false);
   const [doorOpen, setDoorOpen] = useState(false);
+  const [shake, setShake] = useState(false);
+  const [settleShake, setSettleShake] = useState(false);
   const [flash, setFlash] = useState(false);
   const [zoomIn, setZoomIn] = useState(false);
   const [blackout, setBlackout] = useState(false);
@@ -372,6 +608,7 @@ export const VaultModal: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => 
     const next = [...values];
     next[i] = v;
     setValues(next);
+    audio.playDialClick();
   };
 
   const handleBlackout = () => {
@@ -379,13 +616,63 @@ export const VaultModal: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => 
     setTimeout(() => onUnlock(), 800);
   };
 
+  // Triggers once the user manually clicks/spins the central wheel hub after unlocking
+  const handleWheelClick = () => {
+    if (!unlocked || wheelRotation !== 0) return;
+    
+    setPromptInteraction(false);
+    // Spin the wheel half turn
+    setWheelRotation(Math.PI * 1.2);
+    audio.playWheelSpin();
+
+    // After wheel spins (800ms): retract bolts
+    setTimeout(() => {
+      setBoltsRetracted(true);
+      setShake(true);
+      audio.playBoltRetraction();
+    }, 850);
+
+    // Stop mechanical bolt shake (400ms duration)
+    setTimeout(() => setShake(false), 1250);
+
+    // After bolts retract: swing heavy door open
+    setTimeout(() => {
+      setDoorOpen(true);
+      audio.playDoorOpen();
+    }, 1550);
+
+    // After bolts retract: swing heavy door open
+    setTimeout(() => {
+      setDoorOpen(true);
+      audio.playDoorOpen();
+    }, 1550);
+
+    // Door hits max swing settle thud & heavy shake (takes longer due to weight: ~3.7s)
+    setTimeout(() => {
+      setSettleShake(true);
+      audio.playHeavyThud();
+    }, 5200);
+
+    // Settle camera shake
+    setTimeout(() => setSettleShake(false), 5700);
+
+    // Camera zooms through
+    setTimeout(() => setZoomIn(true), 6000);
+  };
+
   useEffect(() => {
     if (!unlocked && values.every((v, i) => v === CORRECT[i])) {
       setUnlocked(true);
-      setTimeout(() => setFlash(true), 150);
-      setTimeout(() => setFlash(false), 900);
-      setTimeout(() => setDoorOpen(true), 1000);
-      setTimeout(() => setZoomIn(true), 2600);
+      
+      // Step 1: Flash & play chime success
+      setTimeout(() => {
+        setFlash(true);
+        audio.playAccessGranted();
+      }, 150);
+      setTimeout(() => {
+        setFlash(false);
+        setPromptInteraction(true); // Guide the user to click the wheel hub
+      }, 900);
     }
   }, [values, unlocked]);
 
@@ -440,6 +727,23 @@ export const VaultModal: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => 
           </p>
         </motion.div>
 
+        {/* Interactive instructions layer */}
+        <AnimatePresence>
+          {promptInteraction && (
+            <motion.div 
+              className="absolute z-10 top-[22vh] px-4 py-2 border border-amber-500/20 bg-amber-950/20 rounded-md backdrop-blur-md pointer-events-none flex items-center gap-2.5"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
+              <span className="font-['Inter'] text-[10px] uppercase tracking-[0.3em] text-amber-200">
+                Click Center Wheel to Unlatch
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* 3D Canvas */}
         <div className="w-full z-[5]" style={{ height: '62vh' }}>
           <Canvas
@@ -452,7 +756,17 @@ export const VaultModal: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => 
             }}
           >
             <Suspense fallback={null}>
-              <VaultScene open={doorOpen} unlocked={unlocked} zoom={zoomIn} onBlackout={handleBlackout} />
+              <VaultScene 
+                open={doorOpen} 
+                unlocked={unlocked} 
+                zoom={zoomIn} 
+                shake={shake}
+                settleShake={settleShake}
+                boltsRetracted={boltsRetracted}
+                wheelRotation={wheelRotation}
+                onWheelClick={handleWheelClick}
+                onBlackout={handleBlackout} 
+              />
             </Suspense>
           </Canvas>
         </div>
@@ -485,7 +799,7 @@ export const VaultModal: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => 
             }}
           />
           <span className="font-['Inter'] text-[9px] tracking-[0.5em] uppercase text-zinc-600">
-            {unlocked ? 'Unlocking…' : 'Locked'}
+            {unlocked ? (wheelRotation > 0 ? 'Opening…' : 'Unlatched') : 'Locked'}
           </span>
           <div className="h-px w-14 bg-gradient-to-l from-transparent to-zinc-800" />
         </motion.div>
