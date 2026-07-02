@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useSpring, animated } from '@react-spring/three';
-import { Environment, PerspectiveCamera } from '@react-three/drei';
+import { Environment, PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Dial } from './Dial';
@@ -579,6 +579,21 @@ const VaultScene: React.FC<{
       wheelRotation={wheelRotation}
       onWheelClick={onWheelClick}
     />
+
+    {/* Enable interactive OrbitControls with increased sensitivity and wider vertical bounds to look at the sky/floor */}
+    {!zoom && (
+      <OrbitControls 
+        enableZoom={false}
+        enablePan={false}
+        minPolarAngle={Math.PI * 0.12} // raised so you can look way up at the sky
+        maxPolarAngle={Math.PI * 0.72} // lowered so you can look down at the floor
+        minAzimuthAngle={-Math.PI * 0.35} // wider horizontal look
+        maxAzimuthAngle={Math.PI * 0.35}
+        enableDamping={true}
+        dampingFactor={0.05}
+        rotateSpeed={1.8} // increased sensitivity (default is 1.0)
+      />
+    )}
 
     {/* Loading custom sunset/neon studio HDR preset environment for reflections */}
     <Environment preset="studio" />
